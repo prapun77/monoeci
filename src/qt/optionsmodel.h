@@ -1,9 +1,9 @@
-// Copyright (c) 2011-2015 The Bitcoin Core developers
+// Copyright (c) 2011-2018 The Bitcoin Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#ifndef BITCOIN_QT_OPTIONSMODEL_H
-#define BITCOIN_QT_OPTIONSMODEL_H
+#ifndef MONOECI_QT_OPTIONSMODEL_H
+#define MONOECI_QT_OPTIONSMODEL_H
 
 #include "amount.h"
 
@@ -47,7 +47,6 @@ public:
         ThreadsScriptVerif,     // int
         DatabaseCache,          // int
         SpendZeroConfChange,    // bool
-        ShowMasternodesTab,     // bool
         ShowAdvancedPSUI,       // bool
         LowKeysWarning,         // bool
         PrivateSendRounds,      // int
@@ -107,4 +106,4 @@ Q_SIGNALS:
     void hideTrayIconChanged(bool);
 };
 
-#endif // BITCOIN_QT_OPTIONSMODEL_H
+#endif // MONOECI_QT_OPTIONSMODEL_H

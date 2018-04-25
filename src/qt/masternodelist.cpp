@@ -33,7 +33,7 @@ MasternodeList::MasternodeList(const PlatformStyle *platformStyle, QWidget *pare
     walletModel(0)
 {
     ui->setupUi(this);
-
+	
     ui->startButton->setEnabled(false);
 
     int columnAliasWidth = 100;

@@ -1,10 +1,10 @@
 // Copyright (c) 2009-2010 Satoshi Nakamoto
-// Copyright (c) 2009-2015 The Bitcoin Core developers
+// Copyright (c) 2009-2018 The Bitcoin Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#ifndef BITCOIN_NET_H
-#define BITCOIN_NET_H
+#ifndef MONOECI_NET_H
+#define MONOECI_NET_H
 
 #include "addrdb.h"
 #include "addrman.h"
@@ -142,7 +142,7 @@ public:
     // fConnectToMasternode should be 'true' only if you want this node to allow to connect to itself
     // and/or you want it to be disconnected on CMasternodeMan::ProcessMasternodeConnections()
     // Unfortunately, can't make this method private like in Bitcoin,
-    // because it's used in many Dash-specific places (masternode, privatesend).
+    // because it's used in many Monoeci-specific places (masternode, privatesend).
     CNode* ConnectNode(CAddress addrConnect, const char *pszDest = NULL, bool fConnectToMasternode = false);
 
     struct CFullyConnectedOnly {
@@ -913,4 +913,4 @@ public:
 /** Return a timestamp in the future (in microseconds) for exponentially distributed events. */
 int64_t PoissonNextSend(int64_t nNow, int average_interval_seconds);
 
-#endif // BITCOIN_NET_H
+#endif // MONOECI_NET_H

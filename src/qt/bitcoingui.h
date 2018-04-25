@@ -1,12 +1,12 @@
-// Copyright (c) 2011-2015 The Bitcoin Core developers
+// Copyright (c) 2011-2018 The Bitcoin Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#ifndef BITCOIN_QT_BITCOINGUI_H
-#define BITCOIN_QT_BITCOINGUI_H
+#ifndef MONOECI_QT_BITCOINGUI_H
+#define MONOECI_QT_BITCOINGUI_H
 
 #if defined(HAVE_CONFIG_H)
-#include "config/dash-config.h"
+#include "config/monoeci-config.h"
 #endif
 
 #include "amount.h"
@@ -246,7 +246,7 @@ private Q_SLOTS:
     void showPeers();
     void showRepair();
 
-    /** Open external (default) editor with dash.conf */
+    /** Open external (default) editor with monoeci.conf */
     void showConfEditor();
     /** Open external (default) editor with masternode.conf */
     void showMNConfEditor();
@@ -311,4 +311,4 @@ private Q_SLOTS:
     void onMenuSelection(QAction* action);
 };
 
-#endif // BITCOIN_QT_BITCOINGUI_H
+#endif // MONOECI_QT_BITCOINGUI_H

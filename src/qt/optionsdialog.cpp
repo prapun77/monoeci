@@ -1,9 +1,9 @@
-// Copyright (c) 2011-2015 The Bitcoin Core developers
+// Copyright (c) 2011-2018 The Bitcoin Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
 #if defined(HAVE_CONFIG_H)
-#include "config/dash-config.h"
+#include "config/monoeci-config.h"
 #endif
 
 #include "optionsdialog.h"
@@ -92,11 +92,7 @@ OptionsDialog::OptionsDialog(QWidget *parent, bool enableWallet) :
     }
     
     /* Theme selector */
-    ui->theme->addItem(QString("DASH-light"), QVariant("light"));
-    ui->theme->addItem(QString("DASH-light-hires"), QVariant("light-hires"));
-    ui->theme->addItem(QString("DASH-blue"), QVariant("drkblue"));
-    ui->theme->addItem(QString("DASH-Crownium"), QVariant("crownium"));
-    ui->theme->addItem(QString("DASH-traditional"), QVariant("trad"));
+    ui->theme->addItem(QString("Default"), QVariant("light"));
     
     /* Language selector */
     QDir translations(":translations");
@@ -180,7 +176,6 @@ void OptionsDialog::setModel(OptionsModel *model)
     connect(ui->databaseCache, SIGNAL(valueChanged(int)), this, SLOT(showRestartWarning()));
     connect(ui->threadsScriptVerif, SIGNAL(valueChanged(int)), this, SLOT(showRestartWarning()));
     /* Wallet */
-    connect(ui->showMasternodesTab, SIGNAL(clicked(bool)), this, SLOT(showRestartWarning()));
     connect(ui->spendZeroConfChange, SIGNAL(clicked(bool)), this, SLOT(showRestartWarning()));
     /* Network */
     connect(ui->allowIncoming, SIGNAL(clicked(bool)), this, SLOT(showRestartWarning()));
@@ -202,7 +197,6 @@ void OptionsDialog::setMapper()
 
     /* Wallet */
     mapper->addMapping(ui->coinControlFeatures, OptionsModel::CoinControlFeatures);
-    mapper->addMapping(ui->showMasternodesTab, OptionsModel::ShowMasternodesTab);
     mapper->addMapping(ui->showAdvancedPSUI, OptionsModel::ShowAdvancedPSUI);
     mapper->addMapping(ui->lowKeysWarning, OptionsModel::LowKeysWarning);
     mapper->addMapping(ui->privateSendMultiSession, OptionsModel::PrivateSendMultiSession);

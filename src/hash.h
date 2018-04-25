@@ -1,11 +1,12 @@
 // Copyright (c) 2009-2010 Satoshi Nakamoto
-// Copyright (c) 2009-2015 The Bitcoin Core developers
-// Copyright (c) 2014-2017 The Dash Core developers
+// Copyright (c) 2009-2018 The Bitcoin Core developers
+// Copyright (c) 2014-2018 The Dash Core developers 
+// Copyright (c) 2017-2018 The Monoeci Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#ifndef BITCOIN_HASH_H
-#define BITCOIN_HASH_H
+#ifndef MONOECI_HASH_H
+#define MONOECI_HASH_H
 
 #include "crypto/ripemd160.h"
 #include "crypto/sha256.h"
@@ -329,7 +330,7 @@ public:
 uint64_t SipHashUint256(uint64_t k0, uint64_t k1, const uint256& val);
 uint64_t SipHashUint256Extra(uint64_t k0, uint64_t k1, const uint256& val, uint32_t extra);
 
-/* ----------- Dash Hash ------------------------------------------------ */
+/* ----------- Monoeci Hash ------------------------------------------------ */
 template<typename T1>
 inline uint256 HashX11(const T1 pbegin, const T1 pend)
 
@@ -396,4 +397,4 @@ inline uint256 HashX11(const T1 pbegin, const T1 pend)
     return hash[10].trim256();
 }
 
-#endif // BITCOIN_HASH_H
+#endif // MONOECI_HASH_H

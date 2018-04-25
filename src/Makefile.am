@@ -14,18 +14,18 @@ else
 LIBUNIVALUE = $(UNIVALUE_LIBS)
 endif
 
-BITCOIN_CONFIG_INCLUDES=-I$(builddir)/config
-BITCOIN_INCLUDES=-I$(builddir) -I$(builddir)/obj $(BOOST_CPPFLAGS) $(LEVELDB_CPPFLAGS) $(CRYPTO_CFLAGS) $(SSL_CFLAGS)
+MONOECI_CONFIG_INCLUDES=-I$(builddir)/config
+MONOECI_INCLUDES=-I$(builddir) -I$(builddir)/obj $(BOOST_CPPFLAGS) $(LEVELDB_CPPFLAGS) $(CRYPTO_CFLAGS) $(SSL_CFLAGS)
 
-BITCOIN_INCLUDES += -I$(srcdir)/secp256k1/include
-BITCOIN_INCLUDES += $(UNIVALUE_CFLAGS)
+MONOECI_INCLUDES += -I$(srcdir)/secp256k1/include
+MONOECI_INCLUDES += $(UNIVALUE_CFLAGS)
 
-LIBBITCOIN_SERVER=libbitcoin_server.a
-LIBBITCOIN_WALLET=libbitcoin_wallet.a
-LIBBITCOIN_COMMON=libbitcoin_common.a
-LIBBITCOIN_CLI=libbitcoin_cli.a
-LIBBITCOIN_UTIL=libbitcoin_util.a
-LIBBITCOIN_CRYPTO=crypto/libbitcoin_crypto.a
+LIBMONOECI_SERVER=libbitcoin_server.a
+LIBMONOECI_WALLET=libbitcoin_wallet.a
+LIBMONOECI_COMMON=libbitcoin_common.a
+LIBMONOECI_CLI=libbitcoin_cli.a
+LIBMONOECI_UTIL=libbitcoin_util.a
+LIBMONOECI_CRYPTO=crypto/libbitcoin_crypto.a
 LIBBITCOINQT=qt/libbitcoinqt.a
 LIBSECP256K1=secp256k1/libsecp256k1.la
 
@@ -41,18 +41,18 @@ EXTRA_LIBRARIES += \
   libbitcoin_server.a \
   libbitcoin_cli.a
 if ENABLE_WALLET
-BITCOIN_INCLUDES += $(BDB_CPPFLAGS)
+MONOECI_INCLUDES += $(BDB_CPPFLAGS)
 EXTRA_LIBRARIES += libbitcoin_wallet.a
 endif
 if ENABLE_ZMQ
 EXTRA_LIBRARIES += libbitcoin_zmq.a
 endif
 
-if BUILD_BITCOIN_LIBS
-lib_LTLIBRARIES = libdashconsensus.la
-LIBBITCOIN_CONSENSUS=libdashconsensus.la
+if BUILD_MONOECI_LIBS
+lib_LTLIBRARIES = libmonoeciconsensus.la
+LIBMONOECI_CONSENSUS=libmonoeciconsensus.la
 else
-LIBBITCOIN_CONSENSUS=
+LIBMONOECI_CONSENSUS=
 endif
 
 bin_PROGRAMS =
@@ -60,16 +60,16 @@ TESTS =
 BENCHMARKS =
 
 if BUILD_BITCOIND
-  bin_PROGRAMS += dashd
+  bin_PROGRAMS += monoecid
 endif
 
-if BUILD_BITCOIN_UTILS
-  bin_PROGRAMS += dash-cli dash-tx
+if BUILD_MONOECI_UTILS
+  bin_PROGRAMS += monoeci-cli monoeci-tx
 endif
 
 .PHONY: FORCE check-symbols check-security
-# dash core #
-BITCOIN_CORE_H = \
+# monoeci core #
+MONOECI_CORE_H = \
   addrdb.h \
   activemasternode.h \
   addressindex.h \
@@ -207,8 +207,8 @@ obj/build.h: FORCE
 	  $(abs_top_srcdir)
 libbitcoin_util_a-clientversion.$(OBJEXT): obj/build.h
 
-# server: shared between dashd and dash-qt
-libbitcoin_server_a_CPPFLAGS = $(AM_CPPFLAGS) $(BITCOIN_INCLUDES) $(MINIUPNPC_CPPFLAGS) $(EVENT_CFLAGS) $(EVENT_PTHREADS_CFLAGS)
+# server: shared between monoecid and monoeci-qt
+libbitcoin_server_a_CPPFLAGS = $(AM_CPPFLAGS) $(MONOECI_INCLUDES) $(MINIUPNPC_CPPFLAGS) $(EVENT_CFLAGS) $(EVENT_PTHREADS_CFLAGS)
 libbitcoin_server_a_CXXFLAGS = $(AM_CXXFLAGS) $(PIE_FLAGS)
 libbitcoin_server_a_SOURCES = \
   activemasternode.cpp \
@@ -266,12 +266,12 @@ libbitcoin_server_a_SOURCES = \
   validation.cpp \
   validationinterface.cpp \
   versionbits.cpp \
-  $(BITCOIN_CORE_H)
+  $(MONOECI_CORE_H)
 
 if ENABLE_ZMQ
-LIBBITCOIN_ZMQ=libbitcoin_zmq.a
+LIBMONOECI_ZMQ=libbitcoin_zmq.a
 
-libbitcoin_zmq_a_CPPFLAGS = $(BITCOIN_INCLUDES) $(ZMQ_CFLAGS)
+libbitcoin_zmq_a_CPPFLAGS = $(MONOECI_INCLUDES) $(ZMQ_CFLAGS)
 libbitcoin_zmq_a_CXXFLAGS = $(AM_CXXFLAGS) $(PIE_FLAGS)
 libbitcoin_zmq_a_SOURCES = \
   zmq/zmqabstractnotifier.cpp \
@@ -280,9 +280,9 @@ libbitcoin_zmq_a_SOURCES = \
 endif
 
 
-# wallet: shared between dashd and dash-qt, but only linked
+# wallet: shared between monoecid and monoeci-qt, but only linked
 # when wallet enabled
-libbitcoin_wallet_a_CPPFLAGS = $(AM_CPPFLAGS) $(BITCOIN_INCLUDES)
+libbitcoin_wallet_a_CPPFLAGS = $(AM_CPPFLAGS) $(MONOECI_INCLUDES)
 libbitcoin_wallet_a_CXXFLAGS = $(AM_CXXFLAGS) $(PIE_FLAGS)
 libbitcoin_wallet_a_SOURCES = \
   keepass.cpp \
@@ -296,10 +296,10 @@ libbitcoin_wallet_a_SOURCES = \
   wallet/wallet_ismine.cpp \
   wallet/walletdb.cpp \
   policy/rbf.cpp \
-  $(BITCOIN_CORE_H)
+  $(MONOECI_CORE_H)
 
 # crypto primitives library
-crypto_libbitcoin_crypto_a_CPPFLAGS = $(AM_CPPFLAGS) $(BITCOIN_CONFIG_INCLUDES) $(PIC_FLAGS)
+crypto_libbitcoin_crypto_a_CPPFLAGS = $(AM_CPPFLAGS) $(MONOECI_CONFIG_INCLUDES) $(PIC_FLAGS)
 crypto_libbitcoin_crypto_a_CXXFLAGS = $(AM_CXXFLAGS) $(PIE_FLAGS) $(PIC_FLAGS)
 crypto_libbitcoin_crypto_a_SOURCES = \
   crypto/common.h \
@@ -343,8 +343,8 @@ crypto_libbitcoin_crypto_a_SOURCES += \
   crypto/sph_skein.h \
   crypto/sph_types.h
 
-# common: shared between dashd, and dash-qt and non-server tools
-libbitcoin_common_a_CPPFLAGS = $(AM_CPPFLAGS) $(BITCOIN_INCLUDES)
+# common: shared between monoecid, and monoeci-qt and non-server tools
+libbitcoin_common_a_CPPFLAGS = $(AM_CPPFLAGS) $(MONOECI_INCLUDES)
 libbitcoin_common_a_CXXFLAGS = $(AM_CXXFLAGS) $(PIE_FLAGS)
 libbitcoin_common_a_SOURCES = \
   amount.cpp \
@@ -373,12 +373,12 @@ libbitcoin_common_a_SOURCES = \
   script/script_error.cpp \
   script/sign.cpp \
   script/standard.cpp \
-  $(BITCOIN_CORE_H)
+  $(MONOECI_CORE_H)
 
 # util: shared between all executables.
 # This library *must* be included to make sure that the glibc
 # backward-compatibility objects and their sanity checks are linked.
-libbitcoin_util_a_CPPFLAGS = $(AM_CPPFLAGS) $(BITCOIN_INCLUDES)
+libbitcoin_util_a_CPPFLAGS = $(AM_CPPFLAGS) $(MONOECI_INCLUDES)
 libbitcoin_util_a_CXXFLAGS = $(AM_CXXFLAGS) $(PIE_FLAGS)
 libbitcoin_util_a_SOURCES = \
   support/pagelocker.cpp \
@@ -397,93 +397,93 @@ libbitcoin_util_a_SOURCES = \
   utilmoneystr.cpp \
   utilstrencodings.cpp \
   utiltime.cpp \
-  $(BITCOIN_CORE_H)
+  $(MONOECI_CORE_H)
 
 if GLIBC_BACK_COMPAT
 libbitcoin_util_a_SOURCES += compat/glibc_compat.cpp
 endif
 
-# cli: shared between dash-cli and dash-qt
-libbitcoin_cli_a_CPPFLAGS = $(AM_CPPFLAGS) $(BITCOIN_INCLUDES)
+# cli: shared between monoeci-cli and monoeci-qt
+libbitcoin_cli_a_CPPFLAGS = $(AM_CPPFLAGS) $(MONOECI_INCLUDES)
 libbitcoin_cli_a_CXXFLAGS = $(AM_CXXFLAGS) $(PIE_FLAGS)
 libbitcoin_cli_a_SOURCES = \
   rpc/client.cpp \
-  $(BITCOIN_CORE_H)
+  $(MONOECI_CORE_H)
 
 nodist_libbitcoin_util_a_SOURCES = $(srcdir)/obj/build.h
 #
 
 # bitcoind binary #
-dashd_SOURCES = dashd.cpp
-dashd_CPPFLAGS = $(AM_CPPFLAGS) $(BITCOIN_INCLUDES)
-dashd_CXXFLAGS = $(AM_CXXFLAGS) $(PIE_FLAGS)
-dashd_LDFLAGS = $(RELDFLAGS) $(AM_LDFLAGS) $(LIBTOOL_APP_LDFLAGS)
+monoecid_SOURCES = monoecid.cpp
+monoecid_CPPFLAGS = $(AM_CPPFLAGS) $(MONOECI_INCLUDES)
+monoecid_CXXFLAGS = $(AM_CXXFLAGS) $(PIE_FLAGS)
+monoecid_LDFLAGS = $(RELDFLAGS) $(AM_LDFLAGS) $(LIBTOOL_APP_LDFLAGS)
 
 if TARGET_WINDOWS
-dashd_SOURCES += dashd-res.rc
+monoecid_SOURCES += monoecid-res.rc
 endif
 
-dashd_LDADD = \
-  $(LIBBITCOIN_SERVER) \
-  $(LIBBITCOIN_COMMON) \
+monoecid_LDADD = \
+  $(LIBMONOECI_SERVER) \
+  $(LIBMONOECI_COMMON) \
   $(LIBUNIVALUE) \
-  $(LIBBITCOIN_UTIL) \
-  $(LIBBITCOIN_CRYPTO) \
+  $(LIBMONOECI_UTIL) \
+  $(LIBMONOECI_CRYPTO) \
   $(LIBLEVELDB) \
   $(LIBMEMENV) \
   $(LIBSECP256K1)
 
 if ENABLE_ZMQ
-dashd_LDADD += $(LIBBITCOIN_ZMQ) $(ZMQ_LIBS)
+monoecid_LDADD += $(LIBMONOECI_ZMQ) $(ZMQ_LIBS)
 endif
 
 if ENABLE_WALLET
-dashd_LDADD += libbitcoin_wallet.a
+monoecid_LDADD += libbitcoin_wallet.a
 endif
 
-dashd_LDADD += $(BOOST_LIBS) $(BDB_LIBS) $(SSL_LIBS) $(CRYPTO_LIBS) $(MINIUPNPC_LIBS) $(EVENT_PTHREADS_LIBS) $(EVENT_LIBS)
+monoecid_LDADD += $(BOOST_LIBS) $(BDB_LIBS) $(SSL_LIBS) $(CRYPTO_LIBS) $(MINIUPNPC_LIBS) $(EVENT_PTHREADS_LIBS) $(EVENT_LIBS)
 
-# dash-cli binary #
-dash_cli_SOURCES = dash-cli.cpp
-dash_cli_CPPFLAGS = $(AM_CPPFLAGS) $(BITCOIN_INCLUDES) $(EVENT_CFLAGS)
-dash_cli_CXXFLAGS = $(AM_CXXFLAGS) $(PIE_FLAGS)
-dash_cli_LDFLAGS = $(RELDFLAGS) $(AM_LDFLAGS) $(LIBTOOL_APP_LDFLAGS)
+# monoeci-cli binary #
+monoeci_cli_SOURCES = monoeci-cli.cpp
+monoeci_cli_CPPFLAGS = $(AM_CPPFLAGS) $(MONOECI_INCLUDES) $(EVENT_CFLAGS)
+monoeci_cli_CXXFLAGS = $(AM_CXXFLAGS) $(PIE_FLAGS)
+monoeci_cli_LDFLAGS = $(RELDFLAGS) $(AM_LDFLAGS) $(LIBTOOL_APP_LDFLAGS)
 
 if TARGET_WINDOWS
-dash_cli_SOURCES += dash-cli-res.rc
+monoeci_cli_SOURCES += monoeci-cli-res.rc
 endif
 
-dash_cli_LDADD = \
-  $(LIBBITCOIN_CLI) \
+monoeci_cli_LDADD = \
+  $(LIBMONOECI_CLI) \
   $(LIBUNIVALUE) \
-  $(LIBBITCOIN_UTIL)
-dash_cli_LDADD += $(BOOST_LIBS) $(SSL_LIBS) $(CRYPTO_LIBS) $(EVENT_LIBS)
+  $(LIBMONOECI_UTIL)
+monoeci_cli_LDADD += $(BOOST_LIBS) $(SSL_LIBS) $(CRYPTO_LIBS) $(EVENT_LIBS)
 #
 
-# dash-tx binary #
-dash_tx_SOURCES = dash-tx.cpp
-dash_tx_CPPFLAGS = $(AM_CPPFLAGS) $(BITCOIN_INCLUDES)
-dash_tx_CXXFLAGS = $(AM_CXXFLAGS) $(PIE_FLAGS)
-dash_tx_LDFLAGS = $(RELDFLAGS) $(AM_LDFLAGS) $(LIBTOOL_APP_LDFLAGS)
+# monoeci-tx binary #
+monoeci_tx_SOURCES = monoeci-tx.cpp
+monoeci_tx_CPPFLAGS = $(AM_CPPFLAGS) $(MONOECI_INCLUDES)
+monoeci_tx_CXXFLAGS = $(AM_CXXFLAGS) $(PIE_FLAGS)
+monoeci_tx_LDFLAGS = $(RELDFLAGS) $(AM_LDFLAGS) $(LIBTOOL_APP_LDFLAGS)
 
 if TARGET_WINDOWS
-dash_tx_SOURCES += dash-tx-res.rc
+monoeci_tx_SOURCES += monoeci-tx-res.rc
 endif
 
-dash_tx_LDADD = \
+monoeci_tx_LDADD = \
   $(LIBUNIVALUE) \
-  $(LIBBITCOIN_COMMON) \
-  $(LIBBITCOIN_UTIL) \
-  $(LIBBITCOIN_CRYPTO) \
+  $(LIBMONOECI_COMMON) \
+  $(LIBMONOECI_UTIL) \
+  $(LIBMONOECI_CRYPTO) \
   $(LIBSECP256K1)
 
-dash_tx_LDADD += $(BOOST_LIBS) $(CRYPTO_LIBS)
+monoeci_tx_LDADD += $(BOOST_LIBS) $(CRYPTO_LIBS)
 #
 
-# dashconsensus library #
-if BUILD_BITCOIN_LIBS
-include_HEADERS = script/dashconsensus.h
-libdashconsensus_la_SOURCES = \
+# monoeciconsensus library #
+if BUILD_MONOECI_LIBS
+include_HEADERS = script/monoeciconsensus.h
+libmonoeciconsensus_la_SOURCES = \
   crypto/hmac_sha512.cpp \
   crypto/ripemd160.cpp \
   crypto/sha1.cpp \
@@ -492,20 +492,20 @@ libdashconsensus_la_SOURCES = \
   hash.cpp \
   primitives/transaction.cpp \
   pubkey.cpp \
-  script/dashconsensus.cpp \
+  script/monoeciconsensus.cpp \
   script/interpreter.cpp \
   script/script.cpp \
   uint256.cpp \
   utilstrencodings.cpp
 
 if GLIBC_BACK_COMPAT
-  libdashconsensus_la_SOURCES += compat/glibc_compat.cpp
+  libmonoeciconsensus_la_SOURCES += compat/glibc_compat.cpp
 endif
 
-libdashconsensus_la_LDFLAGS = $(AM_LDFLAGS) -no-undefined $(RELDFLAGS)
-libdashconsensus_la_LIBADD = $(LIBSECP256K1)
-libdashconsensus_la_CPPFLAGS = $(AM_CPPFLAGS) -I$(builddir)/obj -I$(srcdir)/secp256k1/include -DBUILD_BITCOIN_INTERNAL
-libdashconsensus_la_CXXFLAGS = $(AM_CXXFLAGS) $(PIE_FLAGS)
+libmonoeciconsensus_la_LDFLAGS = $(AM_LDFLAGS) -no-undefined $(RELDFLAGS)
+libmonoeciconsensus_la_LIBADD = $(LIBSECP256K1)
+libmonoeciconsensus_la_CPPFLAGS = $(AM_CPPFLAGS) -I$(builddir)/obj -I$(srcdir)/secp256k1/include -DBUILD_MONOECI_INTERNAL
+libmonoeciconsensus_la_CXXFLAGS = $(AM_CXXFLAGS) $(PIE_FLAGS)
 
 endif
 #

@@ -1,6 +1,7 @@
 // Copyright (c) 2009-2010 Satoshi Nakamoto
-// Copyright (c) 2009-2015 The Bitcoin Core developers
-// Copyright (c) 2014-2017 The Dash Core developers
+// Copyright (c) 2009-2018 The Bitcoin Core developers
+// Copyright (c) 2014-2018 The Dash Core developers 
+// Copyright (c) 2017-2018 The Monoeci Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -8,11 +9,11 @@
  * Server/client environment: argument handling, config file parsing,
  * logging, thread wrappers
  */
-#ifndef BITCOIN_UTIL_H
-#define BITCOIN_UTIL_H
+#ifndef MONOECI_UTIL_H
+#define MONOECI_UTIL_H
 
 #if defined(HAVE_CONFIG_H)
-#include "config/dash-config.h"
+#include "config/monoeci-config.h"
 #endif
 
 #include "compat.h"
@@ -34,14 +35,14 @@
 
 // Uncomment the following line to enable debugging messages
 // or enable on a per file basis prior to inclusion of util.h
-//#define ENABLE_DASH_DEBUG
-#ifdef ENABLE_DASH_DEBUG
+//#define ENABLE_MONOECI_DEBUG
+#ifdef ENABLE_MONOECI_DEBUG
 #define DBG( x ) x
 #else
 #define DBG( x ) 
 #endif
 
-//Dash only features
+//Monoeci only features
 
 extern bool fMasterNode;
 extern bool fLiteMode;
@@ -74,8 +75,8 @@ extern bool fLogIPs;
 extern volatile bool fReopenDebugLog;
 extern CTranslationInterface translationInterface;
 
-extern const char * const BITCOIN_CONF_FILENAME;
-extern const char * const BITCOIN_PID_FILENAME;
+extern const char * const MONOECI_CONF_FILENAME;
+extern const char * const MONOECI_PID_FILENAME;
 
 /**
  * Translation function: Call Translate signal on UI interface, which returns a boost::optional result.
@@ -248,7 +249,7 @@ std::string GetThreadName();
  */
 template <typename Callable> void TraceThread(const char* name,  Callable func)
 {
-    std::string s = strprintf("dash-%s", name);
+    std::string s = strprintf("monoeci-%s", name);
     RenameThread(s.c_str());
     try
     {
@@ -300,4 +301,4 @@ std::string IntVersionToString(uint32_t nVersion);
 std::string SafeIntVersionToString(uint32_t nVersion);
 
 
-#endif // BITCOIN_UTIL_H
+#endif // MONOECI_UTIL_H

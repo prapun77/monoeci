@@ -1,9 +1,9 @@
-// Copyright (c) 2011-2015 The Bitcoin Core developers
+// Copyright (c) 2011-2018 The Bitcoin Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#ifndef BITCOIN_QT_UTILITYDIALOG_H
-#define BITCOIN_QT_UTILITYDIALOG_H
+#ifndef MONOECI_QT_UTILITYDIALOG_H
+#define MONOECI_QT_UTILITYDIALOG_H
 
 #include <QDialog>
 #include <QObject>
@@ -55,4 +55,4 @@ protected:
     void closeEvent(QCloseEvent *event);
 };
 
-#endif // BITCOIN_QT_UTILITYDIALOG_H
+#endif // MONOECI_QT_UTILITYDIALOG_H

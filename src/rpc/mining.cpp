@@ -1,6 +1,7 @@
 // Copyright (c) 2010 Satoshi Nakamoto
-// Copyright (c) 2009-2015 The Bitcoin Core developers
-// Copyright (c) 2014-2017 The Dash Core developers
+// Copyright (c) 2009-2018 The Bitcoin Core developers
+// Copyright (c) 2014-2018 The Dash Core developers 
+// Copyright (c) 2017-2018 The Monoeci Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -107,7 +108,7 @@ UniValue getgenerate(const UniValue& params, bool fHelp)
         throw runtime_error(
             "getgenerate\n"
             "\nReturn if the server is set to generate coins or not. The default is false.\n"
-            "It is set with the command line argument -gen (or " + std::string(BITCOIN_CONF_FILENAME) + " setting gen)\n"
+            "It is set with the command line argument -gen (or " + std::string(MONOECI_CONF_FILENAME) + " setting gen)\n"
             "It can also be set with the setgenerate call.\n"
             "\nResult\n"
             "true|false      (boolean) If the server is set to generate coins or not\n"
@@ -496,23 +497,23 @@ UniValue getblocktemplate(const UniValue& params, bool fHelp)
         throw JSONRPCError(RPC_CLIENT_P2P_DISABLED, "Error: Peer-to-peer functionality missing or disabled");
 
     if (g_connman->GetNodeCount(CConnman::CONNECTIONS_ALL) == 0)
-        throw JSONRPCError(RPC_CLIENT_NOT_CONNECTED, "Dash Core is not connected!");
+        throw JSONRPCError(RPC_CLIENT_NOT_CONNECTED, "Monoeci Core is not connected!");
 
     if (IsInitialBlockDownload())
-        throw JSONRPCError(RPC_CLIENT_IN_INITIAL_DOWNLOAD, "Dash Core is downloading blocks...");
+        throw JSONRPCError(RPC_CLIENT_IN_INITIAL_DOWNLOAD, "Monoeci Core is downloading blocks...");
 
     // when enforcement is on we need information about a masternode payee or otherwise our block is going to be orphaned by the network
     CScript payee;
     if (sporkManager.IsSporkActive(SPORK_8_MASTERNODE_PAYMENT_ENFORCEMENT)
         && !masternodeSync.IsWinnersListSynced()
         && !mnpayments.GetBlockPayee(chainActive.Height() + 1, payee))
-            throw JSONRPCError(RPC_CLIENT_IN_INITIAL_DOWNLOAD, "Dash Core is downloading masternode winners...");
+            throw JSONRPCError(RPC_CLIENT_IN_INITIAL_DOWNLOAD, "Monoeci Core is downloading masternode winners...");
 
     // next bock is a superblock and we need governance info to correctly construct it
     if (sporkManager.IsSporkActive(SPORK_9_SUPERBLOCKS_ENABLED)
         && !masternodeSync.IsSynced()
         && CSuperblock::IsValidBlockHeight(chainActive.Height() + 1))
-            throw JSONRPCError(RPC_CLIENT_IN_INITIAL_DOWNLOAD, "Dash Core is syncing with network...");
+            throw JSONRPCError(RPC_CLIENT_IN_INITIAL_DOWNLOAD, "Monoeci Core is syncing with network...");
 
     static unsigned int nTransactionsUpdatedLast;
 

@@ -1,5 +1,5 @@
 // Copyright (c) 2009-2010 Satoshi Nakamoto
-// Copyright (c) 2009-2015 The Bitcoin Core developers
+// Copyright (c) 2009-2018 The Bitcoin Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -81,7 +81,7 @@ unsigned int static KimotoGravityWell(const CBlockIndex* pindexLast, const Conse
 }
 
 unsigned int static DarkGravityWave(const CBlockIndex* pindexLast, const Consensus::Params& params) {
-    /* current difficulty formula, dash - DarkGravity v3, written by Evan Duffield - evan@dash.org */
+    /* current difficulty formula, monoeci - DarkGravity v3, written by Evan Duffield - evan@monoeci.org */
     const arith_uint256 bnPowLimit = UintToArith256(params.powLimit);
     int64_t nPastBlocks = 24;
 

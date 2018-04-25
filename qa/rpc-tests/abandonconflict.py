@@ -1,5 +1,5 @@
 #!/usr/bin/env python2
-# Copyright (c) 2014-2015 The Bitcoin Core developers
+# Copyright (c) 2014-2018 The Bitcoin Core developers
 # Distributed under the MIT software license, see the accompanying
 # file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -131,7 +131,7 @@ class AbandonConflictTest(BitcoinTestFramework):
         inputs =[]
         inputs.append({"txid":txA, "vout":nA})
         outputs = {}
-        outputs[self.nodes[1].getnewaddress()] = Decimal("9.9999")
+        outputs[self.nodes[1].getnewaddress()] = Decimal("9.24157")
         tx = self.nodes[0].createrawtransaction(inputs, outputs)
         signed = self.nodes[0].signrawtransaction(tx)
         self.nodes[1].sendrawtransaction(signed["hex"])

@@ -1,11 +1,12 @@
 // Copyright (c) 2009-2010 Satoshi Nakamoto
-// Copyright (c) 2009-2015 The Bitcoin Core developers
-// Copyright (c) 2014-2017 The Dash Core developers
+// Copyright (c) 2009-2018 The Bitcoin Core developers
+// Copyright (c) 2014-2018 The Dash Core developers 
+// Copyright (c) 2017-2018 The Monoeci Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#ifndef BITCOIN_UINT256_H
-#define BITCOIN_UINT256_H
+#ifndef MONOECI_UINT256_H
+#define MONOECI_UINT256_H
 
 #include <assert.h>
 #include <cstring>
@@ -178,4 +179,4 @@ public:
 };
 
 
-#endif // BITCOIN_UINT256_H
+#endif // MONOECI_UINT256_H

@@ -1,11 +1,12 @@
 // Copyright (c) 2009-2010 Satoshi Nakamoto
-// Copyright (c) 2009-2015 The Bitcoin Core developers
-// Copyright (c) 2014-2017 The Dash Core developers
+// Copyright (c) 2009-2018 The Bitcoin Core developers
+// Copyright (c) 2014-2018 The Dash Core developers 
+// Copyright (c) 2017-2018 The Monoeci Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#ifndef BITCOIN_WALLET_WALLET_H
-#define BITCOIN_WALLET_WALLET_H
+#ifndef MONOECI_WALLET_WALLET_H
+#define MONOECI_WALLET_WALLET_H
 
 #include "amount.h"
 #include "base58.h"
@@ -772,7 +773,7 @@ public:
 
     bool SelectCoinsGrouppedByAddresses(std::vector<CompactTallyItem>& vecTallyRet, bool fSkipDenominated = true, bool fAnonymizable = true, bool fSkipUnconfirmed = true) const;
 
-    /// Get 1000DASH output and keys which can be used for the Masternode
+    /// Get 1000XMCC output and keys which can be used for the Masternode
     bool GetMasternodeOutpointAndKeys(COutPoint& outpointRet, CPubKey& pubKeyRet, CKey& keyRet, std::string strTxHash = "", std::string strOutputIndex = "");
     /// Extract txin information and keys from output
     bool GetOutpointAndKeysFromOutput(const COutput& out, COutPoint& outpointRet, CPubKey& pubKeyRet, CKey& keyRet);
@@ -1093,4 +1094,4 @@ public:
     }
 };
 
-#endif // BITCOIN_WALLET_WALLET_H
+#endif // MONOECI_WALLET_WALLET_H

@@ -1,11 +1,12 @@
 // Copyright (c) 2009-2010 Satoshi Nakamoto
-// Copyright (c) 2009-2015 The Bitcoin Core developers
-// Copyright (c) 2014-2017 The Dash Core developers
+// Copyright (c) 2009-2018 The Bitcoin Core developers
+// Copyright (c) 2014-2018 The Dash Core developers 
+// Copyright (c) 2017-2018 The Monoeci Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
 #if defined(HAVE_CONFIG_H)
-#include "config/dash-config.h"
+#include "config/monoeci-config.h"
 #endif
 
 #include "util.h"
@@ -104,7 +105,7 @@ namespace boost {
 
 using namespace std;
 
-//Dash only features
+//Monoeci only features
 bool fMasterNode = false;
 bool fLiteMode = false;
 /**
@@ -116,8 +117,8 @@ bool fLiteMode = false;
 */
 int nWalletBackups = 10;
 
-const char * const BITCOIN_CONF_FILENAME = "dash.conf";
-const char * const BITCOIN_PID_FILENAME = "dashd.pid";
+const char * const MONOECI_CONF_FILENAME = "monoeci.conf";
+const char * const MONOECI_PID_FILENAME = "monoecid.pid";
 
 map<string, string> mapArgs;
 map<string, vector<string> > mapMultiArgs;
@@ -271,8 +272,8 @@ bool LogAcceptCategory(const char* category)
             const vector<string>& categories = mapMultiArgs["-debug"];
             ptrCategory.reset(new set<string>(categories.begin(), categories.end()));
             // thread_specific_ptr automatically deletes the set when the thread ends.
-            // "dash" is a composite category enabling all Dash-related debug output
-            if(ptrCategory->count(string("dash"))) {
+            // "monoeci" is a composite category enabling all Monoeci-related debug output
+            if(ptrCategory->count(string("monoeci"))) {
                 ptrCategory->insert(string("privatesend"));
                 ptrCategory->insert(string("instantsend"));
                 ptrCategory->insert(string("masternode"));
@@ -496,7 +497,7 @@ static std::string FormatException(const std::exception* pex, const char* pszThr
     char pszModule[MAX_PATH] = "";
     GetModuleFileNameA(NULL, pszModule, sizeof(pszModule));
 #else
-    const char* pszModule = "dash";
+    const char* pszModule = "monoeci";
 #endif
     if (pex)
         return strprintf(
@@ -516,13 +517,13 @@ void PrintExceptionContinue(const std::exception* pex, const char* pszThread)
 boost::filesystem::path GetDefaultDataDir()
 {
     namespace fs = boost::filesystem;
-    // Windows < Vista: C:\Documents and Settings\Username\Application Data\DashCore
-    // Windows >= Vista: C:\Users\Username\AppData\Roaming\DashCore
-    // Mac: ~/Library/Application Support/DashCore
-    // Unix: ~/.dashcore
+    // Windows < Vista: C:\Documents and Settings\Username\Application Data\monoeciCore
+    // Windows >= Vista: C:\Users\Username\AppData\Roaming\monoeciCore
+    // Mac: ~/Library/Application Support/monoeciCore
+    // Unix: ~/.monoeciCore
 #ifdef WIN32
     // Windows
-    return GetSpecialFolderPath(CSIDL_APPDATA) / "DashCore";
+    return GetSpecialFolderPath(CSIDL_APPDATA) / "monoeciCore";
 #else
     fs::path pathRet;
     char* pszHome = getenv("HOME");
@@ -532,10 +533,10 @@ boost::filesystem::path GetDefaultDataDir()
         pathRet = fs::path(pszHome);
 #ifdef MAC_OSX
     // Mac
-    return pathRet / "Library/Application Support/DashCore";
+    return pathRet / "Library/Application Support/monoeciCore";
 #else
     // Unix
-    return pathRet / ".dashcore";
+    return pathRet / ".monoeciCore";
 #endif
 #endif
 }
@@ -610,7 +611,7 @@ void ClearDatadirCache()
 
 boost::filesystem::path GetConfigFile()
 {
-    boost::filesystem::path pathConfigFile(GetArg("-conf", BITCOIN_CONF_FILENAME));
+    boost::filesystem::path pathConfigFile(GetArg("-conf", MONOECI_CONF_FILENAME));
     if (!pathConfigFile.is_complete())
         pathConfigFile = GetDataDir(false) / pathConfigFile;
 
@@ -629,7 +630,7 @@ void ReadConfigFile(map<string, string>& mapSettingsRet,
 {
     boost::filesystem::ifstream streamConfig(GetConfigFile());
     if (!streamConfig.good()){
-        // Create empty dash.conf if it does not excist
+        // Create empty monoeci.conf if it does not excist
         FILE* configFile = fopen(GetConfigFile().string().c_str(), "a");
         if (configFile != NULL)
             fclose(configFile);
@@ -641,7 +642,7 @@ void ReadConfigFile(map<string, string>& mapSettingsRet,
 
     for (boost::program_options::detail::config_file_iterator it(streamConfig, setOptions), end; it != end; ++it)
     {
-        // Don't overwrite existing settings so command line settings override dash.conf
+        // Don't overwrite existing settings so command line settings override monoeci.conf
         string strKey = string("-") + it->string_key;
         string strValue = it->value[0];
         InterpretNegativeSetting(strKey, strValue);
@@ -656,7 +657,7 @@ void ReadConfigFile(map<string, string>& mapSettingsRet,
 #ifndef WIN32
 boost::filesystem::path GetPidFile()
 {
-    boost::filesystem::path pathPidFile(GetArg("-pid", BITCOIN_PID_FILENAME));
+    boost::filesystem::path pathPidFile(GetArg("-pid", MONOECI_PID_FILENAME));
     if (!pathPidFile.is_complete()) pathPidFile = GetDataDir() / pathPidFile;
     return pathPidFile;
 }

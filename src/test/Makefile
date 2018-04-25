@@ -1,6 +1,6 @@
 all:
-	$(MAKE) -C .. dash_test
+	$(MAKE) -C .. monoeci_test
 clean:
-	$(MAKE) -C .. dash_test_clean
+	$(MAKE) -C .. monoeci_test_clean
 check:
-	$(MAKE) -C .. dash_test_check
+	$(MAKE) -C .. monoeci_test_check
