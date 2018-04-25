@@ -63,9 +63,9 @@ for arg in sys.argv[1:]:
 #Set env vars
 buildDir = BUILDDIR
 if "DASHD" not in os.environ:
-    os.environ["DASHD"] = buildDir + '/src/dashd' + EXEEXT
+    os.environ["DASHD"] = buildDir + '/src/monoecid' + EXEEXT
 if "DASHCLI" not in os.environ:
-    os.environ["DASHCLI"] = buildDir + '/src/dash-cli' + EXEEXT
+    os.environ["DASHCLI"] = buildDir + '/src/monoeci-cli' + EXEEXT
 
 if EXEEXT == ".exe" and "-win" not in opts:
     # https://github.com/bitcoin/bitcoin/commit/d52802551752140cf41f0d9a225a43e84404d3e9
@@ -90,7 +90,6 @@ if ENABLE_ZMQ:
 testScripts = [
     'bip68-112-113-p2p.py',
     'wallet.py',
-    'wallet-hd.py',
     'listtransactions.py',
     'receivedby.py',
     'mempool_resurrect_test.py',
@@ -108,7 +107,6 @@ testScripts = [
     'proxy_test.py',
     'merkle_blocks.py',
     'fundrawtransaction.py',
-    'fundrawtransaction-hd.py',
     'signrawtransactions.py',
     'walletbackup.py',
     'nodehandling.py',
@@ -122,7 +120,6 @@ testScripts = [
     'disablewallet.py',
     'sendheaders.py', # NOTE: needs dash_hash to pass
     'keypool.py',
-    'keypool-hd.py',
     'prioritise_transaction.py',
     'invalidblockrequest.py', # NOTE: needs dash_hash to pass
     'invalidtxrequest.py', # NOTE: needs dash_hash to pass
@@ -152,7 +149,7 @@ testScriptsExt = [
     'p2p-acceptblock.py', # NOTE: needs dash_hash to pass
     'mempool_packages.py',
     'maxuploadtarget.py',
-    # 'replace-by-fee.py', # RBF is disabled in Dash Core
+    # 'replace-by-fee.py', # RBF is disabled in monoeci Core
 ]
 
 def runtests():

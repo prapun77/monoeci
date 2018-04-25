@@ -125,7 +125,7 @@ bool CAlert::AppliesToMe() const
     return AppliesTo(PROTOCOL_VERSION, FormatSubVersion(CLIENT_NAME, CLIENT_VERSION, std::vector<std::string>()));
 }
 
-bool CAlert::RelayTo(CNode* pnode, CConnman& connman) const
+bool CAlert::RelayTo(CNode* pnode) const
 {
     if (!IsInEffect())
         return false;
@@ -139,7 +139,7 @@ bool CAlert::RelayTo(CNode* pnode, CConnman& connman) const
             AppliesToMe() ||
             GetAdjustedTime() < nRelayUntil)
         {
-            connman.PushMessage(pnode, NetMsgType::ALERT, *this);
+            pnode->PushMessage(NetMsgType::ALERT, *this);
             return true;
         }
     }

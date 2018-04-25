@@ -1,15 +1,15 @@
 [Unit]
-Description=Dash's distributed currency daemon
+Description=monoeci's distributed currency daemon
 After=network.target
 
 [Service]
-User=dashcore
-Group=dashcore
+User=monoeciCore
+Group=monoeciCore
 
 Type=forking
-PIDFile=/var/lib/dashd/dashd.pid
-ExecStart=/usr/bin/dashd -daemon -pid=/var/lib/dashd/dashd.pid \
--conf=/etc/dashcore/dash.conf -datadir=/var/lib/dashd -disablewallet
+PIDFile=/var/lib/monoecid/monoecid.pid
+ExecStart=/usr/bin/monoecid -daemon -pid=/var/lib/monoecid/monoecid.pid \
+-conf=/etc/monoeciCore/monoeci.conf -datadir=/var/lib/monoecid -disablewallet
 
 Restart=always
 PrivateTmp=true
