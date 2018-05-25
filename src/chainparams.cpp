@@ -230,7 +230,7 @@ public:
         nPoolMaxTransactions = 3;
         nFulfilledRequestExpireTime = 60*60; // fulfilled requests expire in 1 hour
 
-        strSporkAddress = "";
+        strSporkAddress = "MMjPYWGWtw8Z6m9D5WDYkxRa6PAM4NtUoH";
 
         checkpointData = (CCheckpointData) {
             boost::assign::map_list_of
