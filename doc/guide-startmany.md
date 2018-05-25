@@ -89,7 +89,7 @@ You can confirm that remote server is on the correct block by issuing
 
 ```monoeci-cli getinfo```
 
-and comparing with the official explorer at https://explorer.monoeci.org/chain/Monoeci
+and comparing with the official explorer at https://insight.monoeci.io/
 
 ### Local
 

@@ -12,8 +12,8 @@ When a "Transaction Lock" occurs the hash of the related transaction is broadcas
 * `zmqpubhashtxlock`: publishes the transaction hash when locked via InstantSend
 
 This mechanism has been integrated into Bitcore-Node-Monoeci which allows for notification to be broadcast through Insight API in one of two ways:
-* WebSocket: [https://github.com/monoecipay/insight-api-monoeci#web-socket-api](https://github.com/monoecipay/insight-api-monoeci#web-socket-api)
-* API: [https://github.com/monoecipay/insight-api-monoeci#instantsend-transactions](https://github.com/monoecipay/insight-api-monoeci#instantsend-transactions)
+* WebSocket: [https://github.com/yoyae/insight-api-monoeci#web-socket-api](https://github.com/yoyae/insight-api-monoeci#web-socket-api)
+* API: [https://github.com/yoyae/insight-api-monoeci#instantsend-transactions](https://github.com/yoyae/insight-api-monoeci#instantsend-transactions)
 
 #### Command line option
 

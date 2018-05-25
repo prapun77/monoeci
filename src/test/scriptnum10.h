@@ -3,8 +3,8 @@
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#ifndef MONOECI_TEST_SCRIPTNUM10_H
-#define MONOECI_TEST_SCRIPTNUM10_H
+#ifndef BITCOIN_TEST_SCRIPTNUM10_H
+#define BITCOIN_TEST_SCRIPTNUM10_H
 
 #include <algorithm>
 #include <limits>
@@ -180,4 +180,4 @@ private:
 };
 
 
-#endif // MONOECI_TEST_BIGNUM_H
+#endif // BITCOIN_TEST_BIGNUM_H

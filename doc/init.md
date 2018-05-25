@@ -13,7 +13,7 @@ can be found in the contrib/init folder.
 1. Service User
 ---------------------------------
 
-All three Linux startup configurations assume the existence of a "monoeciCore" user
+All three Linux startup configurations assume the existence of a "monoecicore" user
 and group.  They must be created before attempting to use these scripts.
 The OS X configuration assumes monoecid will be set up for the current user.
 
@@ -54,23 +54,23 @@ see `contrib/debian/examples/monoeci.conf`.
 All three configurations assume several paths that might need to be adjusted.
 
 Binary:              `/usr/bin/monoecid`  
-Configuration file:  `/etc/monoeciCore/monoeci.conf`  
+Configuration file:  `/etc/monoecicore/monoeci.conf`  
 Data directory:      `/var/lib/monoecid`  
 PID file:            `/var/run/monoecid/monoecid.pid` (OpenRC and Upstart) or `/var/lib/monoecid/monoecid.pid` (systemd)  
 Lock file:           `/var/lock/subsys/monoecid` (CentOS)  
 
 The configuration file, PID directory (if applicable) and data directory
-should all be owned by the monoeciCore user and group.  It is advised for security
+should all be owned by the monoecicore user and group.  It is advised for security
 reasons to make the configuration file and data directory only readable by the
-monoeciCore user and group.  Access to monoeci-cli and other monoecid rpc clients
+monoecicore user and group.  Access to monoeci-cli and other monoecid rpc clients
 can then be controlled by group membership.
 
 3b) Mac OS X
 
 Binary:              `/usr/local/bin/monoecid`  
-Configuration file:  `~/Library/Application Support/monoeciCore/monoeci.conf`  
-Data directory:      `~/Library/Application Support/monoeciCore`
-Lock file:           `~/Library/Application Support/monoeciCore/.lock`
+Configuration file:  `~/Library/Application Support/MonoeciCore/monoeci.conf`  
+Data directory:      `~/Library/Application Support/MonoeciCore`
+Lock file:           `~/Library/Application Support/MonoeciCore/.lock`
 
 4. Installing Service Configuration
 -----------------------------------
@@ -116,7 +116,7 @@ This Launch Agent will cause monoecid to start whenever the user logs in.
 
 NOTE: This approach is intended for those wanting to run monoecid as the current user.
 You will need to modify org.monoeci.monoecid.plist if you intend to use it as a
-Launch Daemon with a dedicated monoeciCore user.
+Launch Daemon with a dedicated monoecicore user.
 
 5. Auto-respawn
 -----------------------------------

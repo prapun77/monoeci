@@ -3,10 +3,10 @@
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#ifndef MONOECI_BITCOINCONSENSUS_H
-#define MONOECI_BITCOINCONSENSUS_H
+#ifndef BITCOIN_BITCOINCONSENSUS_H
+#define BITCOIN_BITCOINCONSENSUS_H
 
-#if defined(BUILD_MONOECI_INTERNAL) && defined(HAVE_CONFIG_H)
+#if defined(BUILD_BITCOIN_INTERNAL) && defined(HAVE_CONFIG_H)
 #include "config/monoeci-config.h"
   #if defined(_WIN32)
     #if defined(DLL_EXPORT)
@@ -39,6 +39,7 @@ typedef enum monoeciconsensus_error_t
     monoeciconsensus_ERR_TX_INDEX,
     monoeciconsensus_ERR_TX_SIZE_MISMATCH,
     monoeciconsensus_ERR_TX_DESERIALIZE,
+    monoeciconsensus_ERR_INVALID_FLAGS,
 } monoeciconsensus_error;
 
 /** Script verification flags */
@@ -47,7 +48,12 @@ enum
     monoeciconsensus_SCRIPT_FLAGS_VERIFY_NONE                = 0,
     monoeciconsensus_SCRIPT_FLAGS_VERIFY_P2SH                = (1U << 0), // evaluate P2SH (BIP16) subscripts
     monoeciconsensus_SCRIPT_FLAGS_VERIFY_DERSIG              = (1U << 2), // enforce strict DER (BIP66) compliance
+    monoeciconsensus_SCRIPT_FLAGS_VERIFY_NULLDUMMY           = (1U << 4), // enforce NULLDUMMY (BIP147)
     monoeciconsensus_SCRIPT_FLAGS_VERIFY_CHECKLOCKTIMEVERIFY = (1U << 9), // enable CHECKLOCKTIMEVERIFY (BIP65)
+    monoeciconsensus_SCRIPT_FLAGS_VERIFY_CHECKSEQUENCEVERIFY = (1U << 10), // enable CHECKSEQUENCEVERIFY (BIP112)
+    monoeciconsensus_SCRIPT_FLAGS_VERIFY_ALL                 = monoeciconsensus_SCRIPT_FLAGS_VERIFY_P2SH | monoeciconsensus_SCRIPT_FLAGS_VERIFY_DERSIG |
+                                                            monoeciconsensus_SCRIPT_FLAGS_VERIFY_NULLDUMMY | monoeciconsensus_SCRIPT_FLAGS_VERIFY_CHECKLOCKTIMEVERIFY |
+                                                            monoeciconsensus_SCRIPT_FLAGS_VERIFY_CHECKSEQUENCEVERIFY
 };
 
 /// Returns 1 if the input nIn of the serialized transaction pointed to by
@@ -66,4 +72,4 @@ EXPORT_SYMBOL unsigned int monoeciconsensus_version();
 
 #undef EXPORT_SYMBOL
 
-#endif // MONOECI_BITCOINCONSENSUS_H
+#endif // BITCOIN_BITCOINCONSENSUS_H

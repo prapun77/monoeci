@@ -2,8 +2,8 @@
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#ifndef MONOECI_DBWRAPPER_H
-#define MONOECI_DBWRAPPER_H
+#ifndef BITCOIN_DBWRAPPER_H
+#define BITCOIN_DBWRAPPER_H
 
 #include "clientversion.h"
 #include "serialize.h"
@@ -342,4 +342,4 @@ public:
 
 };
 
-#endif // MONOECI_DBWRAPPER_H
+#endif // BITCOIN_DBWRAPPER_H

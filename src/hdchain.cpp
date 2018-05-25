@@ -1,4 +1,4 @@
-// Copyright (c) 2014-2018 The Dash Core developers 
+// Copyright (c) 2014-2018 The Dash Core developers
 // Copyright (c) 2017-2018 The Monoeci Core developers
 // Distributed under the MIT software license, see the accompanying
 
@@ -40,7 +40,7 @@ bool CHDChain::IsCrypted() const
     return fCrypted;
 }
 
-void CHDChain::Debug(std::string strName) const
+void CHDChain::Debug(const std::string& strName) const
 {
     DBG(
         std::cout << __func__ << ": ---" << strName << "---" << std::endl;

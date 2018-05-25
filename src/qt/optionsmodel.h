@@ -2,8 +2,8 @@
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#ifndef MONOECI_QT_OPTIONSMODEL_H
-#define MONOECI_QT_OPTIONSMODEL_H
+#ifndef BITCOIN_QT_OPTIONSMODEL_H
+#define BITCOIN_QT_OPTIONSMODEL_H
 
 #include "amount.h"
 
@@ -91,12 +91,14 @@ private:
     QString strThirdPartyTxUrls;
     bool fCoinControlFeatures;
     bool fShowAdvancedPSUI;
-    /* settings that were overriden by command-line */
+    /* settings that were overridden by command-line */
     QString strOverriddenByCommandLine;
 
-    /// Add option to list of GUI options overridden through command line/config file
+    // Add option to list of GUI options overridden through command line/config file
     void addOverriddenOption(const std::string &option);
 
+    // Check settings version and upgrade default values if required
+    void checkAndMigrate();
 Q_SIGNALS:
     void displayUnitChanged(int unit);
     void privateSendRoundsChanged();
@@ -106,4 +108,4 @@ Q_SIGNALS:
     void hideTrayIconChanged(bool);
 };
 
-#endif // MONOECI_QT_OPTIONSMODEL_H
+#endif // BITCOIN_QT_OPTIONSMODEL_H

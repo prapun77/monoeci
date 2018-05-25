@@ -1,9 +1,9 @@
-// Copyright (c) 2014 The Bitcoin developers
+// Copyright (c) 2014 The Bitcoin Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#ifndef MONOECI_COMPAT_BYTESWAP_H
-#define MONOECI_COMPAT_BYTESWAP_H
+#ifndef BITCOIN_COMPAT_BYTESWAP_H
+#define BITCOIN_COMPAT_BYTESWAP_H
 
 #if defined(HAVE_CONFIG_H)
 #include "config/monoeci-config.h"
@@ -63,4 +63,4 @@ inline uint64_t bswap_64(uint64_t x)
 
 #endif // defined(__APPLE__)
 
-#endif // MONOECI_COMPAT_BYTESWAP_H
+#endif // BITCOIN_COMPAT_BYTESWAP_H
