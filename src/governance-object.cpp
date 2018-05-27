@@ -462,10 +462,6 @@ bool CGovernanceObject::IsValidLocally(std::string& strError, bool& fMissingMast
     }
 
     switch(nObjectType) {
-        case GOVERNANCE_OBJECT_WATCHDOG: {
-            // watchdogs are deprecated
-            return false;
-        }
         case GOVERNANCE_OBJECT_PROPOSAL: {
             CProposalValidator validator(GetDataAsHexString());
             // Note: It's ok to have expired proposals
@@ -482,6 +478,8 @@ bool CGovernanceObject::IsValidLocally(std::string& strError, bool& fMissingMast
             }
             return true;
         }
+		//MONECI : Workaround to keep backward compatibility
+		case GOVERNANCE_OBJECT_WATCHDOG:
         case GOVERNANCE_OBJECT_TRIGGER: {
             if (!fCheckCollateral)
                 // nothing else we can check here (yet?)

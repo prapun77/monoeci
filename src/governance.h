@@ -156,6 +156,7 @@ public: // Types
     struct last_object_rec {
         last_object_rec(bool fStatusOKIn = true)
             : triggerBuffer(),
+              watchdogBuffer(),
               fStatusOK(fStatusOKIn)
             {}
 
@@ -165,10 +166,12 @@ public: // Types
         inline void SerializationOp(Stream& s, Operation ser_action)
         {
             READWRITE(triggerBuffer);
+            READWRITE(watchdogBuffer);
             READWRITE(fStatusOK);
         }
 
         CRateCheckBuffer triggerBuffer;
+        CRateCheckBuffer watchdogBuffer;
         bool fStatusOK;
     };
 
@@ -246,6 +249,12 @@ private:
     object_m_t mapPostponedObjects;
     hash_s_t setAdditionalRelayObjects;
 
+    hash_time_m_t mapWatchdogObjects;
+ 
+    uint256 nHashWatchdogCurrent;
+ 
+    int64_t nTimeWatchdogCurrent;	
+	
     object_ref_cm_t cmapVoteToObject;
 
     vote_cm_t cmapInvalidVotes;
@@ -321,6 +330,9 @@ public:
         LogPrint("gobject", "Governance object manager was cleared\n");
         mapObjects.clear();
         mapErasedGovernanceObjects.clear();
+        mapWatchdogObjects.clear();
+        nHashWatchdogCurrent = uint256();
+        nTimeWatchdogCurrent = 0;
         cmapVoteToObject.Clear();
         cmapInvalidVotes.Clear();
         cmmapOrphanVotes.Clear();
@@ -348,6 +360,9 @@ public:
         READWRITE(cmapInvalidVotes);
         READWRITE(cmmapOrphanVotes);
         READWRITE(mapObjects);
+        READWRITE(mapWatchdogObjects);
+        READWRITE(nHashWatchdogCurrent);
+        READWRITE(nTimeWatchdogCurrent);
         READWRITE(mapLastMasternodeObject);
         if(ser_action.ForRead() && (strVersion != SERIALIZATION_VERSION_STRING)) {
             Clear();
@@ -440,6 +455,8 @@ private:
     void RebuildIndexes();
 
     void AddCachedTriggers();
+	
+	bool UpdateCurrentWatchdog(CGovernanceObject& watchdogNew);
 
     void RequestOrphanObjects(CConnman& connman);
 

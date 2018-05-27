@@ -32,6 +32,9 @@ CGovernanceManager::CGovernanceManager()
       mapObjects(),
       mapErasedGovernanceObjects(),
       mapMasternodeOrphanObjects(),
+      mapWatchdogObjects(),
+      nHashWatchdogCurrent(),
+      nTimeWatchdogCurrent(0),
       cmapVoteToObject(MAX_CACHE_SIZE),
       cmapInvalidVotes(MAX_CACHE_SIZE),
       cmmapOrphanVotes(MAX_CACHE_SIZE),
@@ -326,6 +329,27 @@ void CGovernanceManager::AddGovernanceObject(CGovernanceObject& govobj, CConnman
 
     LogPrint("gobject", "CGovernanceManager::AddGovernanceObject -- Adding object: hash = %s, type = %d\n", nHash.ToString(), govobj.GetObjectType());
 
+	//MONOECI watchdog state backward compatibility
+    if(govobj.nObjectType == GOVERNANCE_OBJECT_WATCHDOG) {
+        // If it's a watchdog, make sure it fits required time bounds
+        if((govobj.GetCreationTime() < GetAdjustedTime() - GOVERNANCE_WATCHDOG_EXPIRATION_TIME ||
+            govobj.GetCreationTime() > GetAdjustedTime() + GOVERNANCE_WATCHDOG_EXPIRATION_TIME)
+            ) {
+            // drop it
+            LogPrint("gobject", "CGovernanceManager::AddGovernanceObject -- CreationTime is out of bounds: hash = %s\n", nHash.ToString());
+            return;
+        }
+
+        if(!UpdateCurrentWatchdog(govobj)) {
+            // Allow wd's which are not current to be reprocessed
+            if(pfrom && (nHashWatchdogCurrent != uint256())) {
+                pfrom->PushInventory(CInv(MSG_GOVERNANCE_OBJECT, nHashWatchdogCurrent));
+            }
+            LogPrint("gobject", "CGovernanceManager::AddGovernanceObject -- Watchdog not better than current: hash = %s\n", nHash.ToString());
+            return;
+        }
+    }
+
     // INSERT INTO OUR GOVERNANCE OBJECT MEMORY
     mapObjects.insert(std::make_pair(nHash, govobj));
 
@@ -336,7 +360,12 @@ void CGovernanceManager::AddGovernanceObject(CGovernanceObject& govobj, CConnman
               << ", nObjectType = " << govobj.nObjectType
               << std::endl; );
 
-    if (govobj.nObjectType == GOVERNANCE_OBJECT_TRIGGER) {
+	//MONOECI watchdog state backward compatibility
+	if (govobj.nObjectType == GOVERNANCE_OBJECT_WATCHDOG) {
+		mapWatchdogObjects[nHash] = govobj.GetCreationTime() + GOVERNANCE_WATCHDOG_EXPIRATION_TIME;
+		LogPrint("gobject", "CGovernanceManager::AddGovernanceObject -- Added watchdog to map: hash = %s\n", nHash.ToString());
+	}
+	if (govobj.nObjectType == GOVERNANCE_OBJECT_TRIGGER) {
         DBG( std::cout << "CGovernanceManager::AddGovernanceObject Before AddNewTrigger" << std::endl; );
         triggerman.AddNewTrigger(nHash);
         DBG( std::cout << "CGovernanceManager::AddGovernanceObject After AddNewTrigger" << std::endl; );
@@ -358,6 +387,41 @@ void CGovernanceManager::AddGovernanceObject(CGovernanceObject& govobj, CConnman
     DBG( std::cout << "CGovernanceManager::AddGovernanceObject END" << std::endl; );
 }
 
+//MONOECI watchdog state backward compatibility
+bool CGovernanceManager::UpdateCurrentWatchdog(CGovernanceObject& watchdogNew)
+{
+    bool fAccept = false;
+
+    arith_uint256 nHashNew = UintToArith256(watchdogNew.GetHash());
+    arith_uint256 nHashCurrent = UintToArith256(nHashWatchdogCurrent);
+
+    int64_t nExpirationDelay = GOVERNANCE_WATCHDOG_EXPIRATION_TIME / 2;
+    int64_t nNow = GetAdjustedTime();
+
+    if(nHashWatchdogCurrent == uint256() ||                                             // no known current OR
+       ((nNow - watchdogNew.GetCreationTime() < nExpirationDelay) &&                    // (new one is NOT expired AND
+        ((nNow - nTimeWatchdogCurrent > nExpirationDelay) || (nHashNew > nHashCurrent)))//  (current is expired OR
+                                                                                        //   its hash is lower))
+    ) {
+        LOCK(cs);
+        object_m_it it = mapObjects.find(nHashWatchdogCurrent);
+        if(it != mapObjects.end()) {
+            LogPrint("gobject", "CGovernanceManager::UpdateCurrentWatchdog -- Expiring previous current watchdog, hash = %s\n", nHashWatchdogCurrent.ToString());
+            it->second.fExpired = true;
+            if(it->second.nDeletionTime == 0) {
+                it->second.nDeletionTime = nNow;
+            }
+        }
+        nHashWatchdogCurrent = watchdogNew.GetHash();
+        nTimeWatchdogCurrent = watchdogNew.GetCreationTime();
+        fAccept = true;
+        LogPrint("gobject", "CGovernanceManager::UpdateCurrentWatchdog -- Current watchdog updated to: hash = %s\n",
+                 ArithToUint256(nHashNew).ToString());
+    }
+
+    return fAccept;
+}
+
 void CGovernanceManager::UpdateCachesAndClean()
 {
     LogPrint("gobject", "CGovernanceManager::UpdateCachesAndClean\n");
@@ -366,6 +430,35 @@ void CGovernanceManager::UpdateCachesAndClean()
 
     LOCK2(cs_main, cs);
 
+	//MONOECI watchdog state backward compatibility
+    // Flag expired watchdogs for removal
+    int64_t nNow = GetAdjustedTime();
+    LogPrint("gobject", "CGovernanceManager::UpdateCachesAndClean -- Number watchdogs in map: %d, current time = %d\n", mapWatchdogObjects.size(), nNow);
+    if(mapWatchdogObjects.size() > 1) {
+        hash_time_m_it it = mapWatchdogObjects.begin();
+        while(it != mapWatchdogObjects.end()) {
+            LogPrint("gobject", "CGovernanceManager::UpdateCachesAndClean -- Checking watchdog: %s, expiration time = %d\n", it->first.ToString(), it->second);
+            if(it->second < nNow) {
+                LogPrint("gobject", "CGovernanceManager::UpdateCachesAndClean -- Attempting to expire watchdog: %s, expiration time = %d\n", it->first.ToString(), it->second);
+                object_m_it it2 = mapObjects.find(it->first);
+                if(it2 != mapObjects.end()) {
+                    LogPrint("gobject", "CGovernanceManager::UpdateCachesAndClean -- Expiring watchdog: %s, expiration time = %d\n", it->first.ToString(), it->second);
+                    it2->second.fExpired = true;
+                    if(it2->second.nDeletionTime == 0) {
+                        it2->second.nDeletionTime = nNow;
+                    }
+                }
+                if(it->first == nHashWatchdogCurrent) {
+                    nHashWatchdogCurrent = uint256();
+                }
+                mapWatchdogObjects.erase(it++);
+            }
+            else {
+                ++it;
+            }
+        }
+    }
+	
     for(size_t i = 0; i < vecDirtyHashes.size(); ++i) {
         object_m_it it = mapObjects.find(vecDirtyHashes[i]);
         if(it == mapObjects.end()) {
@@ -383,8 +476,6 @@ void CGovernanceManager::UpdateCachesAndClean()
 
     // Clean up any expired or invalid triggers
     triggerman.CleanAndRemove();
-
-    int64_t nNow = GetAdjustedTime();
 
     while(it != mapObjects.end())
     {
@@ -439,6 +530,10 @@ void CGovernanceManager::UpdateCachesAndClean()
                 // keep hashes of deleted proposals forever
                 nTimeExpired = std::numeric_limits<int64_t>::max();
             } else {
+				//MONOECI watchdog state backward compatibility
+				if(pObj->GetObjectType() == GOVERNANCE_OBJECT_WATCHDOG) {
+					mapWatchdogObjects.erase(nHash);
+				}
                 int64_t nSuperblockCycleSeconds = Params().GetConsensus().nSuperblockCycle * Params().GetConsensus().nPowTargetSpacing;
                 nTimeExpired = pObj->GetCreationTime() + 2 * nSuperblockCycleSeconds + GOVERNANCE_DELETION_DELAY;
             }
@@ -747,7 +842,7 @@ void CGovernanceManager::SyncAll(CNode* pnode, CConnman& connman) const
 
 void CGovernanceManager::MasternodeRateUpdate(const CGovernanceObject& govobj)
 {
-    if(govobj.GetObjectType() != GOVERNANCE_OBJECT_TRIGGER)
+    if((govobj.GetObjectType() != GOVERNANCE_OBJECT_TRIGGER) && (govobj.GetObjectType() != GOVERNANCE_OBJECT_WATCHDOG))
         return;
 
     const COutPoint& masternodeOutpoint = govobj.GetMasternodeOutpoint();
@@ -757,7 +852,10 @@ void CGovernanceManager::MasternodeRateUpdate(const CGovernanceObject& govobj)
         it = mapLastMasternodeObject.insert(txout_m_t::value_type(masternodeOutpoint, last_object_rec(true))).first;
 
     int64_t nTimestamp = govobj.GetCreationTime();
-    it->second.triggerBuffer.AddTimestamp(nTimestamp);
+	if (GOVERNANCE_OBJECT_TRIGGER == nObjectType)
+        it->second.triggerBuffer.AddTimestamp(nTimestamp);
+    else if (GOVERNANCE_OBJECT_WATCHDOG == nObjectType)
+        it->second.watchdogBuffer.AddTimestamp(nTimestamp);
 
     if (nTimestamp > GetTime() + MAX_TIME_FUTURE_DEVIATION - RELIABLE_PROPAGATION_TIME) {
         // schedule additional relay for the object
@@ -787,7 +885,7 @@ bool CGovernanceManager::MasternodeRateCheck(const CGovernanceObject& govobj, bo
         return true;
     }
 
-    if(govobj.GetObjectType() != GOVERNANCE_OBJECT_TRIGGER) {
+	if((govobj.GetObjectType() != GOVERNANCE_OBJECT_TRIGGER) && (govobj.GetObjectType() != GOVERNANCE_OBJECT_WATCHDOG))
         return true;
     }
 
@@ -819,14 +917,26 @@ bool CGovernanceManager::MasternodeRateCheck(const CGovernanceObject& govobj, bo
         return true;
     }
 
-    // Allow 1 trigger per mn per cycle, with a small fudge factor
-    double dMaxRate = 2 * 1.1 / double(nSuperblockCycleSeconds);
-
-    // Temporary copy to check rate after new timestamp is added
-    CRateCheckBuffer buffer = it->second.triggerBuffer;
-
+	
+	double dMaxRate = 1.1 / nSuperblockCycleSeconds;
+    double dRate = 0.0;
+    CRateCheckBuffer buffer;
+    switch(nObjectType) {
+		case GOVERNANCE_OBJECT_TRIGGER:
+			// Allow 1 trigger per mn per cycle, with a small fudge factor
+			buffer = it->second.triggerBuffer;
+			dMaxRate = 2 * 1.1 / double(nSuperblockCycleSeconds);
+			break;
+		case GOVERNANCE_OBJECT_WATCHDOG:
+			buffer = it->second.watchdogBuffer;
+			dMaxRate = 2 * 1.1 / 3600.;
+			break;
+		default:
+			break;
+    }
+	
     buffer.AddTimestamp(nTimestamp);
-    double dRate = buffer.GetRate();
+    dRate = buffer.GetRate();
 
     if(dRate < dMaxRate) {
         return true;
@@ -891,6 +1001,12 @@ bool CGovernanceManager::ProcessVote(CNode* pfrom, const CGovernanceVote& vote, 
     }
 
     bool fOk = govobj.ProcessVote(pfrom, vote, exception, connman) && cmapVoteToObject.Insert(nHashVote, &govobj);
+	
+	if(fOk && govobj.GetObjectType() == GOVERNANCE_OBJECT_WATCHDOG) {
+        mnodeman.UpdateWatchdogVoteTime(vote.GetMasternodeOutpoint());
+        LogPrint("gobject", "CGovernanceObject::ProcessVote -- GOVERNANCE_OBJECT_WATCHDOG vote %s for %s\n", nHashVote.ToString(), nHashGovobj.ToString());
+    }
+	
     LEAVE_CRITICAL_SECTION(cs);
     return fOk;
 }
@@ -953,7 +1069,7 @@ void CGovernanceManager::CheckPostponedObjects(CConnman& connman)
         const uint256& nHash = it->first;
         CGovernanceObject& govobj = it->second;
 
-        assert(govobj.GetObjectType() != GOVERNANCE_OBJECT_TRIGGER);
+        assert(govobj.GetObjectType() != GOVERNANCE_OBJECT_TRIGGER && govobj.GetObjectType() != GOVERNANCE_OBJECT_WATCHDOG);
 
         std::string strError;
         bool fMissingConfirmations;
@@ -1226,6 +1342,7 @@ std::string CGovernanceManager::ToString() const
 
     int nProposalCount = 0;
     int nTriggerCount = 0;
+    int nWatchdogCount = 0;
     int nOtherCount = 0;
 
     object_m_cit it = mapObjects.begin();
@@ -1237,6 +1354,9 @@ std::string CGovernanceManager::ToString() const
                 break;
             case GOVERNANCE_OBJECT_TRIGGER:
                 nTriggerCount++;
+                break;            
+			case GOVERNANCE_OBJECT_WATCHDOG:
+                nWatchdogCount++;
                 break;
             default:
                 nOtherCount++;
@@ -1245,9 +1365,9 @@ std::string CGovernanceManager::ToString() const
         ++it;
     }
 
-    return strprintf("Governance Objects: %d (Proposals: %d, Triggers: %d, Other: %d; Erased: %d), Votes: %d",
+    return strprintf("Governance Objects: %d (Proposals: %d, Triggers: %d, Watchdogs: %d/%d, Other: %d; Erased: %d), Votes: %d",
                     (int)mapObjects.size(),
-                    nProposalCount, nTriggerCount, nOtherCount, (int)mapErasedGovernanceObjects.size(),
+                    nProposalCount, nTriggerCount, nWatchdogCount, mapWatchdogObjects.size(), nOtherCount, (int)mapErasedGovernanceObjects.size(),
                     (int)cmapVoteToObject.GetSize());
 }
 
