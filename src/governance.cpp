@@ -852,9 +852,9 @@ void CGovernanceManager::MasternodeRateUpdate(const CGovernanceObject& govobj)
         it = mapLastMasternodeObject.insert(txout_m_t::value_type(masternodeOutpoint, last_object_rec(true))).first;
 
     int64_t nTimestamp = govobj.GetCreationTime();
-	if (GOVERNANCE_OBJECT_TRIGGER == nObjectType)
+	if (GOVERNANCE_OBJECT_TRIGGER == govobj.GetObjectType())
         it->second.triggerBuffer.AddTimestamp(nTimestamp);
-    else if (GOVERNANCE_OBJECT_WATCHDOG == nObjectType)
+    else if (GOVERNANCE_OBJECT_WATCHDOG == govobj.GetObjectType())
         it->second.watchdogBuffer.AddTimestamp(nTimestamp);
 
     if (nTimestamp > GetTime() + MAX_TIME_FUTURE_DEVIATION - RELIABLE_PROPAGATION_TIME) {
@@ -885,7 +885,7 @@ bool CGovernanceManager::MasternodeRateCheck(const CGovernanceObject& govobj, bo
         return true;
     }
 
-	if((govobj.GetObjectType() != GOVERNANCE_OBJECT_TRIGGER) && (govobj.GetObjectType() != GOVERNANCE_OBJECT_WATCHDOG))
+	if((govobj.GetObjectType() != GOVERNANCE_OBJECT_TRIGGER) && (govobj.GetObjectType() != GOVERNANCE_OBJECT_WATCHDOG)){
         return true;
     }
 
