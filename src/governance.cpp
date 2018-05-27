@@ -921,7 +921,7 @@ bool CGovernanceManager::MasternodeRateCheck(const CGovernanceObject& govobj, bo
 	double dMaxRate = 1.1 / nSuperblockCycleSeconds;
     double dRate = 0.0;
     CRateCheckBuffer buffer;
-    switch(nObjectType) {
+    switch(govobj.GetObjectType()) {
 		case GOVERNANCE_OBJECT_TRIGGER:
 			// Allow 1 trigger per mn per cycle, with a small fudge factor
 			buffer = it->second.triggerBuffer;
