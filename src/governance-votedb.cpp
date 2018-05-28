@@ -21,18 +21,18 @@ CGovernanceObjectVoteFile::CGovernanceObjectVoteFile(const CGovernanceObjectVote
 
 void CGovernanceObjectVoteFile::AddVote(const CGovernanceVote& vote)
 {
+    uint256 nHash = vote.GetHash();
+    // make sure to never add/update already known votes
+    if (HasVote(nHash))
+        return;
     listVotes.push_front(vote);
-    mapVoteIndex[vote.GetHash()] = listVotes.begin();
+    mapVoteIndex.emplace(nHash, listVotes.begin());
     ++nMemoryVotes;
 }
 
 bool CGovernanceObjectVoteFile::HasVote(const uint256& nHash) const
 {
-    vote_m_cit it = mapVoteIndex.find(nHash);
-    if(it == mapVoteIndex.end()) {
-        return false;
-    }
-    return true;
+    return mapVoteIndex.find(nHash) != mapVoteIndex.end();
 }
 
 bool CGovernanceObjectVoteFile::SerializeVoteToStream(const uint256& nHash, CDataStream& ss) const
