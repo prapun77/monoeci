@@ -5,8 +5,6 @@
 
 #include "activemasternode.h"
 #include "addrman.h"
-#include "alert.h"
-#include "clientversion.h"
 #include "governance.h"
 #include "masternode-payments.h"
 #include "masternode-sync.h"
@@ -18,15 +16,12 @@
 #include "privatesend-client.h"
 #endif // ENABLE_WALLET
 #include "script/standard.h"
-#include "ui_interface.h"
 #include "util.h"
-#include "warnings.h"
 
 /** Masternode manager */
 CMasternodeMan mnodeman;
 
 const std::string CMasternodeMan::SERIALIZATION_VERSION_STRING = "CMasternodeMan-Version-7";
-const int CMasternodeMan::LAST_PAID_SCAN_BLOCKS = 100;
 
 struct CompareLastPaidBlock
 {
@@ -69,7 +64,7 @@ CMasternodeMan::CMasternodeMan():
     fMasternodesAdded(false),
     fMasternodesRemoved(false),
     vecDirtyGovernanceObjectHashes(),
-    nLastSentinelPingTime(0),
+    nLastWatchdogVoteTime(0),
     mapSeenMasternodeBroadcast(),
     mapSeenMasternodePing(),
     nDsqCount(0)
@@ -94,26 +89,25 @@ void CMasternodeMan::AskForMN(CNode* pnode, const COutPoint& outpoint, CConnman&
     CNetMsgMaker msgMaker(pnode->GetSendVersion());
     LOCK(cs);
 
-    CService addrSquashed = Params().AllowMultiplePorts() ? (CService)pnode->addr : CService(pnode->addr, 0);
-    auto it1 = mWeAskedForMasternodeListEntry.find(outpoint);
+    std::map<COutPoint, std::map<CNetAddr, int64_t> >::iterator it1 = mWeAskedForMasternodeListEntry.find(outpoint);
     if (it1 != mWeAskedForMasternodeListEntry.end()) {
-        auto it2 = it1->second.find(addrSquashed);
+        std::map<CNetAddr, int64_t>::iterator it2 = it1->second.find(pnode->addr);
         if (it2 != it1->second.end()) {
             if (GetTime() < it2->second) {
                 // we've asked recently, should not repeat too often or we could get banned
                 return;
             }
             // we asked this node for this outpoint but it's ok to ask again already
-            LogPrintf("CMasternodeMan::AskForMN -- Asking same peer %s for missing masternode entry again: %s\n", addrSquashed.ToString(), outpoint.ToStringShort());
+            LogPrintf("CMasternodeMan::AskForMN -- Asking same peer %s for missing masternode entry again: %s\n", pnode->addr.ToString(), outpoint.ToStringShort());
         } else {
             // we already asked for this outpoint but not this node
-            LogPrintf("CMasternodeMan::AskForMN -- Asking new peer %s for missing masternode entry: %s\n", addrSquashed.ToString(), outpoint.ToStringShort());
+            LogPrintf("CMasternodeMan::AskForMN -- Asking new peer %s for missing masternode entry: %s\n", pnode->addr.ToString(), outpoint.ToStringShort());
         }
     } else {
         // we never asked any node for this outpoint
-        LogPrintf("CMasternodeMan::AskForMN -- Asking peer %s for missing masternode entry for the first time: %s\n", addrSquashed.ToString(), outpoint.ToStringShort());
+        LogPrintf("CMasternodeMan::AskForMN -- Asking peer %s for missing masternode entry for the first time: %s\n", pnode->addr.ToString(), outpoint.ToStringShort());
     }
-    mWeAskedForMasternodeListEntry[outpoint][addrSquashed] = GetTime() + DSEG_UPDATE_SECONDS;
+    mWeAskedForMasternodeListEntry[outpoint][pnode->addr] = GetTime() + DSEG_UPDATE_SECONDS;
 
     if (pnode->GetSendVersion() <= 70208) {
         connman.PushMessage(pnode, msgMaker.Make(NetMsgType::DSEG, CTxIn(outpoint)));
@@ -162,9 +156,9 @@ bool CMasternodeMan::PoSeBan(const COutPoint &outpoint)
 
 void CMasternodeMan::Check()
 {
-    LOCK2(cs_main, cs);
+    LOCK(cs);
 
-    LogPrint("masternode", "CMasternodeMan::Check -- nLastSentinelPingTime=%d, IsSentinelPingActive()=%d\n", nLastSentinelPingTime, IsSentinelPingActive());
+    LogPrint("masternode", "CMasternodeMan::Check -- nLastWatchdogVoteTime=%d, IsWatchdogActive()=%d\n", nLastWatchdogVoteTime, IsWatchdogActive());
 
     for (auto& mnpair : mapMasternodes) {
         // NOTE: internally it checks only every MASTERNODE_CHECK_SECONDS seconds
@@ -210,11 +204,10 @@ void CMasternodeMan::CheckAndRemove(CConnman& connman)
                 bool fAsk = (nAskForMnbRecovery > 0) &&
                             masternodeSync.IsSynced() &&
                             it->second.IsNewStartRequired() &&
-                            !IsMnbRecoveryRequested(hash) &&
-                            !IsArgSet("-connect");
+                            !IsMnbRecoveryRequested(hash);
                 if(fAsk) {
                     // this mn is in a non-recoverable state and we haven't asked other nodes yet
-                    std::set<CService> setRequested;
+                    std::set<CNetAddr> setRequested;
                     // calulate only once and only when it's needed
                     if(vecMasternodeRanks.empty()) {
                         int nRandomBlockHeight = GetRandInt(nCachedBlockHeight);
@@ -267,7 +260,7 @@ void CMasternodeMan::CheckAndRemove(CConnman& connman)
         // no need for cm_main below
         LOCK(cs);
 
-        auto itMnbRequest = mMnbRecoveryRequests.begin();
+        std::map<uint256, std::pair< int64_t, std::set<CNetAddr> > >::iterator itMnbRequest = mMnbRecoveryRequests.begin();
         while(itMnbRequest != mMnbRecoveryRequests.end()){
             // Allow this mnb to be re-verified again after MNB_RECOVERY_RETRY_SECONDS seconds
             // if mn is still in MASTERNODE_NEW_START_REQUIRED state.
@@ -279,7 +272,7 @@ void CMasternodeMan::CheckAndRemove(CConnman& connman)
         }
 
         // check who's asked for the Masternode list
-        auto it1 = mAskedUsForMasternodeList.begin();
+        std::map<CNetAddr, int64_t>::iterator it1 = mAskedUsForMasternodeList.begin();
         while(it1 != mAskedUsForMasternodeList.end()){
             if((*it1).second < GetTime()) {
                 mAskedUsForMasternodeList.erase(it1++);
@@ -299,9 +292,9 @@ void CMasternodeMan::CheckAndRemove(CConnman& connman)
         }
 
         // check which Masternodes we've asked for
-        auto it2 = mWeAskedForMasternodeListEntry.begin();
+        std::map<COutPoint, std::map<CNetAddr, int64_t> >::iterator it2 = mWeAskedForMasternodeListEntry.begin();
         while(it2 != mWeAskedForMasternodeListEntry.end()){
-            auto it3 = it2->second.begin();
+            std::map<CNetAddr, int64_t>::iterator it3 = it2->second.begin();
             while(it3 != it2->second.end()){
                 if(it3->second < GetTime()){
                     it2->second.erase(it3++);
@@ -316,7 +309,7 @@ void CMasternodeMan::CheckAndRemove(CConnman& connman)
             }
         }
 
-        auto it3 = mWeAskedForVerification.begin();
+        std::map<CNetAddr, CMasternodeVerification>::iterator it3 = mWeAskedForVerification.begin();
         while(it3 != mWeAskedForVerification.end()){
             if(it3->second.nBlockHeight < nCachedBlockHeight - MAX_POSE_BLOCKS) {
                 mWeAskedForVerification.erase(it3++);
@@ -367,7 +360,7 @@ void CMasternodeMan::Clear()
     mapSeenMasternodeBroadcast.clear();
     mapSeenMasternodePing.clear();
     nDsqCount = 0;
-    nLastSentinelPingTime = 0;
+    nLastWatchdogVoteTime = 0;
 }
 
 int CMasternodeMan::CountMasternodes(int nProtocolVersion)
@@ -420,12 +413,11 @@ void CMasternodeMan::DsegUpdate(CNode* pnode, CConnman& connman)
     CNetMsgMaker msgMaker(pnode->GetSendVersion());
     LOCK(cs);
 
-    CService addrSquashed = Params().AllowMultiplePorts() ? (CService)pnode->addr : CService(pnode->addr, 0);
     if(Params().NetworkIDString() == CBaseChainParams::MAIN) {
         if(!(pnode->addr.IsRFC1918() || pnode->addr.IsLocal())) {
-            auto it = mWeAskedForMasternodeList.find(addrSquashed);
+            std::map<CNetAddr, int64_t>::iterator it = mWeAskedForMasternodeList.find(pnode->addr);
             if(it != mWeAskedForMasternodeList.end() && GetTime() < (*it).second) {
-                LogPrintf("CMasternodeMan::DsegUpdate -- we already asked %s for the list; skipping...\n", addrSquashed.ToString());
+                LogPrintf("CMasternodeMan::DsegUpdate -- we already asked %s for the list; skipping...\n", pnode->addr.ToString());
                 return;
             }
         }
@@ -437,7 +429,7 @@ void CMasternodeMan::DsegUpdate(CNode* pnode, CConnman& connman)
         connman.PushMessage(pnode, msgMaker.Make(NetMsgType::DSEG, COutPoint()));
     }
     int64_t askAgain = GetTime() + DSEG_UPDATE_SECONDS;
-    mWeAskedForMasternodeList[addrSquashed] = askAgain;
+    mWeAskedForMasternodeList[pnode->addr] = askAgain;
 
     LogPrint("masternode", "CMasternodeMan::DsegUpdate -- asked %s for the list\n", pnode->addr.ToString());
 }
@@ -806,6 +798,8 @@ void CMasternodeMan::ProcessMessage(CNode* pfrom, const std::string& strCommand,
 {
     if(fLiteMode) return; // disable all Monoeci specific functionality
 
+    CNetMsgMaker msgMaker(pfrom->GetSendVersion());
+
     if (strCommand == NetMsgType::MNANNOUNCE) { //Masternode Broadcast
 
         CMasternodeBroadcast mnb;
@@ -823,7 +817,6 @@ void CMasternodeMan::ProcessMessage(CNode* pfrom, const std::string& strCommand,
             // use announced Masternode as a peer
             connman.AddNewAddress(CAddress(mnb.addr, NODE_NETWORK), pfrom->addr, 2*60*60);
         } else if(nDos > 0) {
-            LOCK(cs_main);
             Misbehaving(pfrom->GetId(), nDos);
         }
 
@@ -854,8 +847,11 @@ void CMasternodeMan::ProcessMessage(CNode* pfrom, const std::string& strCommand,
         // see if we have this Masternode
         CMasternode* pmn = Find(mnp.masternodeOutpoint);
 
+        // if masternode uses sentinel ping instead of watchdog
+        // we shoud update nTimeLastWatchdogVote here if sentinel
+        // ping flag is actual
         if(pmn && mnp.fSentinelIsCurrent)
-            UpdateLastSentinelPingTime();
+            UpdateWatchdogVoteTime(mnp.masternodeOutpoint, mnp.sigTime);
 
         // too late, new MNANNOUNCE is required
         if(pmn && pmn->IsNewStartRequired()) return;
@@ -892,6 +888,8 @@ void CMasternodeMan::ProcessMessage(CNode* pfrom, const std::string& strCommand,
         }
 
         LogPrint("masternode", "DSEG -- Masternode list, masternode=%s\n", masternodeOutpoint.ToStringShort());
+
+        LOCK(cs);
 
         if(masternodeOutpoint.IsNull()) {
             SyncAll(pfrom, connman);
@@ -947,26 +945,24 @@ void CMasternodeMan::SyncAll(CNode* pnode, CConnman& connman)
     // do not provide any data until our node is synced
     if (!masternodeSync.IsSynced()) return;
 
+    LOCK(cs);
+
     // local network
     bool isLocal = (pnode->addr.IsRFC1918() || pnode->addr.IsLocal());
 
-    CService addrSquashed = Params().AllowMultiplePorts() ? (CService)pnode->addr : CService(pnode->addr, 0);
     // should only ask for this once
     if(!isLocal && Params().NetworkIDString() == CBaseChainParams::MAIN) {
-        LOCK2(cs_main, cs);
-        auto it = mAskedUsForMasternodeList.find(addrSquashed);
+        std::map<CNetAddr, int64_t>::iterator it = mAskedUsForMasternodeList.find(pnode->addr);
         if (it != mAskedUsForMasternodeList.end() && it->second > GetTime()) {
             Misbehaving(pnode->GetId(), 34);
             LogPrintf("CMasternodeMan::%s -- peer already asked me for the list, peer=%d\n", __func__, pnode->id);
             return;
         }
         int64_t askAgain = GetTime() + DSEG_UPDATE_SECONDS;
-        mAskedUsForMasternodeList[addrSquashed] = askAgain;
+        mAskedUsForMasternodeList[pnode->addr] = askAgain;
     }
 
     int nInvCount = 0;
-
-    LOCK(cs);
 
     for (const auto& mnpair : mapMasternodes) {
         if (mnpair.second.addr.IsRFC1918() || mnpair.second.addr.IsLocal()) continue; // do not send local network masternode
@@ -1004,7 +1000,9 @@ void CMasternodeMan::DoFullVerificationStep(CConnman& connman)
     rank_pair_vec_t vecMasternodeRanks;
     GetMasternodeRanks(vecMasternodeRanks, nCachedBlockHeight - 1, MIN_POSE_PROTO_VERSION);
 
-    LOCK(cs);
+    // Need LOCK2 here to ensure consistent locking order because the SendVerifyRequest call below locks cs_main
+    // through InitializeNode signal in OpenNetworkConnection
+    LOCK2(cs_main, cs);
 
     int nCount = 0;
 
@@ -1179,8 +1177,6 @@ void CMasternodeMan::ProcessPendingMnvRequests(CConnman& connman)
 
 void CMasternodeMan::SendVerifyReply(CNode* pnode, CMasternodeVerification& mnv, CConnman& connman)
 {
-    AssertLockHeld(cs_main);
-
     // only masternodes can sign this, why would someone ask regular node?
     if(!fMasternodeMode) {
         // do not ban, malicious node might be using my IP
@@ -1236,8 +1232,6 @@ void CMasternodeMan::SendVerifyReply(CNode* pnode, CMasternodeVerification& mnv,
 
 void CMasternodeMan::ProcessVerifyReply(CNode* pnode, CMasternodeVerification& mnv)
 {
-    AssertLockHeld(cs_main);
-
     std::string strError;
 
     // did we even ask for it? if that's the case we should have matching fulfilled request
@@ -1372,8 +1366,6 @@ void CMasternodeMan::ProcessVerifyReply(CNode* pnode, CMasternodeVerification& m
 
 void CMasternodeMan::ProcessVerifyBroadcast(CNode* pnode, const CMasternodeVerification& mnv)
 {
-    AssertLockHeld(cs_main);
-
     std::string strError;
 
     if(mapSeenMasternodeVerification.find(mnv.GetHash()) != mapSeenMasternodeVerification.end()) {
@@ -1603,32 +1595,37 @@ void CMasternodeMan::UpdateLastPaid(const CBlockIndex* pindex)
 
     if(fLiteMode || !masternodeSync.IsWinnersListSynced() || mapMasternodes.empty()) return;
 
-    static int nLastRunBlockHeight = 0;
-    // Scan at least LAST_PAID_SCAN_BLOCKS but no more than mnpayments.GetStorageLimit()
-    int nMaxBlocksToScanBack = std::max(LAST_PAID_SCAN_BLOCKS, nCachedBlockHeight - nLastRunBlockHeight);
-    nMaxBlocksToScanBack = std::min(nMaxBlocksToScanBack, mnpayments.GetStorageLimit());
+    static bool IsFirstRun = true;
+    // Do full scan on first run or if we are not a masternode
+    // (MNs should update this info on every block, so limited scan should be enough for them)
+    int nMaxBlocksToScanBack = (IsFirstRun || !fMasternodeMode) ? mnpayments.GetStorageLimit() : LAST_PAID_SCAN_BLOCKS;
 
-    LogPrint("masternode", "CMasternodeMan::UpdateLastPaid -- nCachedBlockHeight=%d, nLastRunBlockHeight=%d, nMaxBlocksToScanBack=%d\n",
-                            nCachedBlockHeight, nLastRunBlockHeight, nMaxBlocksToScanBack);
+    // LogPrint("mnpayments", "CMasternodeMan::UpdateLastPaid -- nHeight=%d, nMaxBlocksToScanBack=%d, IsFirstRun=%s\n",
+    //                         nCachedBlockHeight, nMaxBlocksToScanBack, IsFirstRun ? "true" : "false");
 
-    for (auto& mnpair : mapMasternodes) {
+    for (auto& mnpair: mapMasternodes) {
         mnpair.second.UpdateLastPaid(pindex, nMaxBlocksToScanBack);
     }
 
-    nLastRunBlockHeight = nCachedBlockHeight;
+    IsFirstRun = false;
 }
 
-void CMasternodeMan::UpdateLastSentinelPingTime()
+void CMasternodeMan::UpdateWatchdogVoteTime(const COutPoint& outpoint, uint64_t nVoteTime)
 {
     LOCK(cs);
-    nLastSentinelPingTime = GetTime();
+    CMasternode* pmn = Find(outpoint);
+    if(!pmn) {
+        return;
+    }
+    pmn->UpdateWatchdogVoteTime(nVoteTime);
+    nLastWatchdogVoteTime = GetTime();
 }
 
-bool CMasternodeMan::IsSentinelPingActive()
+bool CMasternodeMan::IsWatchdogActive()
 {
     LOCK(cs);
     // Check if any masternodes have voted recently, otherwise return false
-    return (GetTime() - nLastSentinelPingTime) <= MASTERNODE_SENTINEL_PING_MAX_SECONDS;
+    return (GetTime() - nLastWatchdogVoteTime) <= MASTERNODE_WATCHDOG_MAX_SECONDS;
 }
 
 bool CMasternodeMan::AddGovernanceVote(const COutPoint& outpoint, uint256 nGovernanceObjectHash)
@@ -1652,7 +1649,7 @@ void CMasternodeMan::RemoveGovernanceObject(uint256 nGovernanceObjectHash)
 
 void CMasternodeMan::CheckMasternode(const CPubKey& pubKeyMasternode, bool fForce)
 {
-    LOCK2(cs_main, cs);
+    LOCK(cs);
     for (auto& mnpair : mapMasternodes) {
         if (mnpair.second.pubKeyMasternode == pubKeyMasternode) {
             mnpair.second.Check(fForce);
@@ -1676,8 +1673,11 @@ void CMasternodeMan::SetMasternodeLastPing(const COutPoint& outpoint, const CMas
         return;
     }
     pmn->lastPing = mnp;
+    // if masternode uses sentinel ping instead of watchdog
+    // we shoud update nTimeLastWatchdogVote here if sentinel
+    // ping flag is actual
     if(mnp.fSentinelIsCurrent) {
-        UpdateLastSentinelPingTime();
+        UpdateWatchdogVoteTime(mnp.masternodeOutpoint, mnp.sigTime);
     }
     mapSeenMasternodePing.insert(std::make_pair(mnp.GetHash(), mnp));
 
@@ -1699,47 +1699,6 @@ void CMasternodeMan::UpdatedBlockTip(const CBlockIndex *pindex)
         // normal wallet does not need to update this every block, doing update on rpc call should be enough
         UpdateLastPaid(pindex);
     }
-}
-
-void CMasternodeMan::WarnMasternodeDaemonUpdates()
-{
-    LOCK(cs);
-
-    static bool fWarned = false;
-
-    if (fWarned || !size() || !masternodeSync.IsMasternodeListSynced())
-        return;
-
-    int nUpdatedMasternodes{0};
-
-    for (const auto& mnpair : mapMasternodes) {
-        if (mnpair.second.lastPing.nDaemonVersion > CLIENT_VERSION) {
-            ++nUpdatedMasternodes;
-        }
-    }
-
-    // Warn only when at least half of known masternodes already updated
-    if (nUpdatedMasternodes < size() / 2)
-        return;
-
-    std::string strWarning;
-    if (nUpdatedMasternodes != size()) {
-        strWarning = strprintf(_("Warning: At least %d of %d masternodes are running on a newer software version. Please check latest releases, you might need to update too."),
-                    nUpdatedMasternodes, size());
-    } else {
-        // someone was postponing this update for way too long probably
-        strWarning = strprintf(_("Warning: Every masternode (out of %d known ones) is running on a newer software version. Please check latest releases, it's very likely that you missed a major/critical update."),
-                    size());
-    }
-
-    // notify GetWarnings(), called by Qt and the JSON-RPC code to warn the user
-    SetMiscWarning(strWarning);
-    // trigger GUI update
-    uiInterface.NotifyAlertChanged(SerializeHash(strWarning), CT_NEW);
-    // trigger cmd-line notification
-    CAlert::Notify(strWarning);
-
-    fWarned = true;
 }
 
 void CMasternodeMan::NotifyMasternodeUpdates(CConnman& connman)

@@ -43,6 +43,7 @@ static const int64_t GOVERNANCE_MIN_RELAY_FEE_CONFIRMATIONS = 1;
 static const int64_t GOVERNANCE_UPDATE_MIN = 60*60;
 static const int64_t GOVERNANCE_DELETION_DELAY = 10*60;
 static const int64_t GOVERNANCE_ORPHAN_EXPIRATION_TIME = 10*60;
+static const int64_t GOVERNANCE_WATCHDOG_EXPIRATION_TIME = 2*60*60;
 
 // FOR SEEN MAP ARRAYS - GOVERNANCE OBJECTS AND VOTES
 static const int SEEN_OBJECT_IS_VALID = 0;
@@ -247,7 +248,7 @@ public:
         fDirtyCache = true;
     }
 
-    const CGovernanceObjectVoteFile& GetVoteFile() const {
+    CGovernanceObjectVoteFile& GetVoteFile() {
         return fileVotes;
     }
 
@@ -255,25 +256,25 @@ public:
 
     void SetMasternodeOutpoint(const COutPoint& outpoint);
     bool Sign(const CKey& keyMasternode, const CPubKey& pubKeyMasternode);
-    bool CheckSignature(const CPubKey& pubKeyMasternode) const;
+    bool CheckSignature(const CPubKey& pubKeyMasternode);
 
     std::string GetSignatureMessage() const;
     uint256 GetSignatureHash() const;
 
     // CORE OBJECT FUNCTIONS
 
-    bool IsValidLocally(std::string& strError, bool fCheckCollateral) const;
+    bool IsValidLocally(std::string& strError, bool fCheckCollateral);
 
-    bool IsValidLocally(std::string& strError, bool& fMissingMasternode, bool& fMissingConfirmations, bool fCheckCollateral) const;
+    bool IsValidLocally(std::string& strError, bool& fMissingMasternode, bool& fMissingConfirmations, bool fCheckCollateral);
 
     /// Check the collateral transaction for the budget proposal/finalized budget
-    bool IsCollateralValid(std::string& strError, bool& fMissingConfirmations) const;
+    bool IsCollateralValid(std::string& strError, bool &fMissingConfirmations);
 
     void UpdateLocalValidity();
 
     void UpdateSentinelVariables();
 
-    CAmount GetMinCollateralFee() const;
+    CAmount GetMinCollateralFee();
 
     UniValue GetJSONObject();
 
@@ -291,7 +292,7 @@ public:
     int GetNoCount(vote_signal_enum_t eVoteSignalIn) const;
     int GetAbstainCount(vote_signal_enum_t eVoteSignalIn) const;
 
-    bool GetCurrentMNVotes(const COutPoint& mnCollateralOutpoint, vote_rec_t& voteRecord) const;
+    bool GetCurrentMNVotes(const COutPoint& mnCollateralOutpoint, vote_rec_t& voteRecord);
 
     // FUNCTIONS FOR DEALING WITH DATA STRING
 
