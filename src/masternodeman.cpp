@@ -1,4 +1,5 @@
-// Copyright (c) 2014-2017 The Dash Core developers
+// Copyright (c) 2014-2018 The Dash Core developers
+// Copyright (c) 2017-2018 The Monoeci Core developers
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -114,7 +115,7 @@ void CMasternodeMan::AskForMN(CNode* pnode, const COutPoint& outpoint, CConnman&
     }
     mWeAskedForMasternodeListEntry[outpoint][addrSquashed] = GetTime() + DSEG_UPDATE_SECONDS;
 
-    if (pnode->GetSendVersion() == 70208) {
+    if (pnode->GetSendVersion() <= 70208) {
         connman.PushMessage(pnode, msgMaker.Make(NetMsgType::DSEG, CTxIn(outpoint)));
     } else {
         connman.PushMessage(pnode, msgMaker.Make(NetMsgType::DSEG, outpoint));
@@ -430,7 +431,7 @@ void CMasternodeMan::DsegUpdate(CNode* pnode, CConnman& connman)
         }
     }
 
-    if (pnode->GetSendVersion() == 70208) {
+    if (pnode->GetSendVersion() <= 70208) {
         connman.PushMessage(pnode, msgMaker.Make(NetMsgType::DSEG, CTxIn()));
     } else {
         connman.PushMessage(pnode, msgMaker.Make(NetMsgType::DSEG, COutPoint()));
@@ -803,7 +804,7 @@ void CMasternodeMan::ProcessPendingMnbRequests(CConnman& connman)
 
 void CMasternodeMan::ProcessMessage(CNode* pfrom, const std::string& strCommand, CDataStream& vRecv, CConnman& connman)
 {
-    if(fLiteMode) return; // disable all Dash specific functionality
+    if(fLiteMode) return; // disable all Monoeci specific functionality
 
     if (strCommand == NetMsgType::MNANNOUNCE) { //Masternode Broadcast
 
@@ -882,7 +883,7 @@ void CMasternodeMan::ProcessMessage(CNode* pfrom, const std::string& strCommand,
 
         COutPoint masternodeOutpoint;
 
-        if (pfrom->nVersion == 70208) {
+        if (pfrom->nVersion <= 70208) {
             CTxIn vin;
             vRecv >> vin;
             masternodeOutpoint = vin.prevout;

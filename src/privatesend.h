@@ -1,4 +1,5 @@
-// Copyright (c) 2014-2017 The Dash Core developers
+// Copyright (c) 2014-2018 The Dash Core developers
+// Copyright (c) 2017-2018 The Monoeci Core developers
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -23,7 +24,7 @@ static const int PRIVATESEND_QUEUE_TIMEOUT          = 30;
 static const int PRIVATESEND_SIGNING_TIMEOUT        = 15;
 
 //! minimum peer version accepted by mixing pool
-static const int MIN_PRIVATESEND_PEER_PROTO_VERSION = 70208;
+static const int MIN_PRIVATESEND_PEER_PROTO_VERSION = 70206;
 
 static const size_t PRIVATESEND_ENTRY_MAX_SIZE      = 9;
 
@@ -218,7 +219,7 @@ public:
         } else if (ser_action.ForRead()) {
             nInputCount = 0;
         }
-        if (nVersion == 70208 && (s.GetType() & SER_NETWORK)) {
+        if (nVersion <= 70208 && (s.GetType() & SER_NETWORK)) {
             // converting from/to old format
             CTxIn txin{};
             if (ser_action.ForRead()) {
@@ -305,7 +306,7 @@ public:
     inline void SerializationOp(Stream& s, Operation ser_action) {
         READWRITE(tx);
         int nVersion = s.GetVersion();
-        if (nVersion == 70208 && (s.GetType() & SER_NETWORK)) {
+        if (nVersion <= 70208 && (s.GetType() & SER_NETWORK)) {
             // converting from/to old format
             CTxIn txin{};
             if (ser_action.ForRead()) {
@@ -406,7 +407,7 @@ public:
     static std::vector<CAmount> GetStandardDenominations() { return vecStandardDenominations; }
     static CAmount GetSmallestDenomination() { return vecStandardDenominations.back(); }
 
-    /// Get the denominations for a specific amount of dash.
+    /// Get the denominations for a specific amount of monoeci.
     static int GetDenominationsByAmounts(const std::vector<CAmount>& vecAmount);
 
     static bool IsDenominatedAmount(CAmount nInputAmount);

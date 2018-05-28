@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-# Copyright (c) 2014-2016 The Bitcoin Core developers
+# Copyright (c) 2014-2018 The Bitcoin Core developers
 # Distributed under the MIT software license, see the accompanying
 # file COPYING or http://www.opensource.org/licenses/mit-license.php.
 """Test rescan behavior of importaddress, importpubkey, importprivkey, and
@@ -112,7 +112,7 @@ class ImportRescanTest(BitcoinTestFramework):
         extra_args = [["-debug=1"] for _ in range(self.num_nodes)]
         for i, import_node in enumerate(IMPORT_NODES, 1):
             if import_node.prune:
-                # txindex is enabled by default in Dash and needs to be disabled for import-rescan.py
+                # txindex is enabled by default in Monoeci and needs to be disabled for import-rescan.py
                 extra_args[i] += ["-prune=1", "-txindex=0", "-reindex-chainstate"]
 
         self.nodes = start_nodes(self.num_nodes, self.options.tmpdir, extra_args)

@@ -1,4 +1,5 @@
-// Copyright (c) 2014-2017 The Dash Core developers
+// Copyright (c) 2014-2018 The Dash Core developers
+// Copyright (c) 2017-2018 The Monoeci Core developers
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -95,10 +96,24 @@ bool CMasternode::UpdateFromNewBroadcast(CMasternodeBroadcast& mnb, CConnman& co
 //
 arith_uint256 CMasternode::CalculateScore(const uint256& blockHash) const
 {
+	/* NEW SYSTEM BUT NOT COMPATIBLE WITH THE CURRENT ONE - MONOECI
     // Deterministically calculate a "score" for a Masternode based on any given (block)hash
     CHashWriter ss(SER_GETHASH, PROTOCOL_VERSION);
     ss << outpoint << nCollateralMinConfBlockHash << blockHash;
     return UintToArith256(ss.GetHash());
+	*/
+	uint256 aux = ArithToUint256(UintToArith256(outpoint.hash) + outpoint.n);
+
+    CHashWriter ss(SER_GETHASH, PROTOCOL_VERSION);
+    ss << blockHash;
+    arith_uint256 hash2 = UintToArith256(ss.GetHash());
+
+    CHashWriter ss2(SER_GETHASH, PROTOCOL_VERSION);
+    ss2 << blockHash;
+    ss2 << aux;
+    arith_uint256 hash3 = UintToArith256(ss2.GetHash());
+
+    return (hash3 > hash2 ? hash3 - hash2 : hash2 - hash3);
 }
 
 CMasternode::CollateralStatus CMasternode::CheckCollateral(const COutPoint& outpoint, const CPubKey& pubkey)
@@ -538,7 +553,7 @@ bool CMasternodeBroadcast::CheckOutpoint(int& nDos)
     }
 
     if (err == COLLATERAL_INVALID_AMOUNT) {
-        LogPrint("masternode", "CMasternodeBroadcast::CheckOutpoint -- Masternode UTXO should have 1000 DASH, masternode=%s\n", outpoint.ToStringShort());
+        LogPrint("masternode", "CMasternodeBroadcast::CheckOutpoint -- Masternode UTXO should have 1000 XMCC, masternode=%s\n", outpoint.ToStringShort());
         nDos = 33;
         return false;
     }

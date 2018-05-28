@@ -1,4 +1,5 @@
-// Copyright (c) 2014-2017 The Dash Core developers
+// Copyright (c) 2014-2018 The Dash Core developers
+// Copyright (c) 2017-2018 The Monoeci Core developers
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -190,7 +191,7 @@ void CMasternodeSync::ProcessTick(CConnman& connman)
                 mnodeman.DsegUpdate(pnode, connman);
             } else if(nRequestedMasternodeAttempt < 6) {
                 //sync payment votes
-                if(pnode->nVersion == 70208) {
+                if(pnode->nVersion <= 70208) {
                     connman.PushMessage(pnode, msgMaker.Make(NetMsgType::MASTERNODEPAYMENTSYNC, mnpayments.GetStorageLimit())); //sync payment votes
                 } else {
                     connman.PushMessage(pnode, msgMaker.Make(NetMsgType::MASTERNODEPAYMENTSYNC)); //sync payment votes
@@ -312,7 +313,7 @@ void CMasternodeSync::ProcessTick(CConnman& connman)
 
                 // ask node for all payment votes it has (new nodes will only return votes for future payments)
                 //sync payment votes
-                if(pnode->nVersion == 70208) {
+                if(pnode->nVersion <= 70208) {
                     connman.PushMessage(pnode, msgMaker.Make(NetMsgType::MASTERNODEPAYMENTSYNC, mnpayments.GetStorageLimit()));
                 } else {
                     connman.PushMessage(pnode, msgMaker.Make(NetMsgType::MASTERNODEPAYMENTSYNC));

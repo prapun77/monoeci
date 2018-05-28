@@ -1,6 +1,6 @@
 /**
- * Copyright (c) 2013-2014 Tomas Dzetkulic
- * Copyright (c) 2013-2014 Pavol Rusnak
+ * Copyright (c) 2013-2018 Tomas Dzetkulic
+ * Copyright (c) 2013-2018 Pavol Rusnak
  *
  * Permission is hereby granted, free of charge, to any person obtaining
  * a copy of this software and associated documentation files (the "Software"),
@@ -21,8 +21,8 @@
  * OTHER DEALINGS IN THE SOFTWARE.
  */
 
-#ifndef DASH_BIP39_H
-#define DASH_BIP39_H
+#ifndef MONOECI_BIP39_H
+#define MONOECI_BIP39_H
 
 #include "support/allocators/secure.h"
 

@@ -1,0 +1,13 @@
+[Desktop Entry]
+Encoding=UTF-8
+Name=Monoeci Core
+Comment=Monoeci P2P Cryptocurrency
+Comment[de]=Verbinde mit dem Monoeci peer-to-peer Netzwerk
+Comment[fr]=Monoeci, monnaie virtuelle cryptographique pair à pair
+Comment[tr]=Monoeci, eşten eşe kriptografik sanal para birimi
+Exec=monoeci-qt %u
+Terminal=false
+Type=Application
+Icon=monoeci128
+MimeType=x-scheme-handler/monoeci;
+Categories=Office;Finance;
