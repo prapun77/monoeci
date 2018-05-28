@@ -175,7 +175,7 @@ UniValue gobject(const JSONRPCRequest& request)
         }
 
         if((govobj.GetObjectType() == GOVERNANCE_OBJECT_TRIGGER) ||
-           (govobj.GetObjectType() == GOVERNANCE_OBJECT_WATCHDOG))
+           (govobj.GetObjectType() == GOVERNANCE_OBJECT_WATCHDOG)) {
             throw JSONRPCError(RPC_INVALID_PARAMETER, "Trigger and watchdog objects need not be prepared (however only masternodes can create them)");
 
         LOCK2(cs_main, pwalletMain->cs_wallet);
