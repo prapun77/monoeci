@@ -2,8 +2,8 @@
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#ifndef BITCOIN_CHECKPOINTS_H
-#define BITCOIN_CHECKPOINTS_H
+#ifndef MONOECI_CHECKPOINTS_H
+#define MONOECI_CHECKPOINTS_H
 
 #include "uint256.h"
 
@@ -22,6 +22,8 @@ namespace Checkpoints
 //! Returns last CBlockIndex* in mapBlockIndex that is a checkpoint
 CBlockIndex* GetLastCheckpoint(const CCheckpointData& data);
 
+double GuessVerificationProgress(const CCheckpointData& data, CBlockIndex* pindex, bool fSigchecks = true);
+
 } //namespace Checkpoints
 
-#endif // BITCOIN_CHECKPOINTS_H
+#endif // MONOECI_CHECKPOINTS_H

@@ -8,7 +8,6 @@
         <file alias="fr">locale/monoeci_fr.qm</file>
         <file alias="it">locale/monoeci_it.qm</file>
         <file alias="ja">locale/monoeci_ja.qm</file>
-        <file alias="nl">locale/monoeci_nl.qm</file>
         <file alias="pl">locale/monoeci_pl.qm</file>
         <file alias="pt">locale/monoeci_pt.qm</file>
         <file alias="ru">locale/monoeci_ru.qm</file>

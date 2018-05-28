@@ -2,8 +2,8 @@
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#ifndef BITCOIN_QT_INTRO_H
-#define BITCOIN_QT_INTRO_H
+#ifndef MONOECI_QT_INTRO_H
+#define MONOECI_QT_INTRO_H
 
 #include <QDialog>
 #include <QMutex>
@@ -35,13 +35,10 @@ public:
     /**
      * Determine data directory. Let the user choose if the current one doesn't exist.
      *
-     * @returns true if a data directory was selected, false if the user cancelled the selection
-     * dialog.
-     *
      * @note do NOT call global GetDataDir() before calling this function, this
      * will cause the wrong path to be cached.
      */
-    static bool pickDataDirectory();
+    static void pickDataDirectory();
 
     /**
      * Determine default data directory for operating system.
@@ -75,4 +72,4 @@ private:
     friend class FreespaceChecker;
 };
 
-#endif // BITCOIN_QT_INTRO_H
+#endif // MONOECI_QT_INTRO_H

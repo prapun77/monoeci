@@ -2,8 +2,8 @@
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#ifndef BITCOIN_CORE_MEMUSAGE_H
-#define BITCOIN_CORE_MEMUSAGE_H
+#ifndef MONOECI_CORE_MEMUSAGE_H
+#define MONOECI_CORE_MEMUSAGE_H
 
 #include "primitives/transaction.h"
 #include "primitives/block.h"
@@ -49,8 +49,8 @@ static inline size_t RecursiveDynamicUsage(const CMutableTransaction& tx) {
 
 static inline size_t RecursiveDynamicUsage(const CBlock& block) {
     size_t mem = memusage::DynamicUsage(block.vtx);
-    for (const auto& tx : block.vtx) {
-        mem += memusage::DynamicUsage(tx) + RecursiveDynamicUsage(*tx);
+    for (std::vector<CTransaction>::const_iterator it = block.vtx.begin(); it != block.vtx.end(); it++) {
+        mem += RecursiveDynamicUsage(*it);
     }
     return mem;
 }
@@ -59,4 +59,4 @@ static inline size_t RecursiveDynamicUsage(const CBlockLocator& locator) {
     return memusage::DynamicUsage(locator.vHave);
 }
 
-#endif // BITCOIN_CORE_MEMUSAGE_H
+#endif // MONOECI_CORE_MEMUSAGE_H

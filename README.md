@@ -3,7 +3,7 @@
 Monoeci Core V1 (0.12.2.3) (XMCC)
 ===============================
 
-This is under development. Please proceed with care.
+This is is under development. Please proceed with care.
 
 https://www.monoeci.io
 
@@ -41,4 +41,4 @@ Copyright (c) 2009-2018 The Bitcoin Core developers
 
 Copyright (c) 2014-2018 The Dash Core developers
 
-Copyright (c) 2017-2018 The Monoeci Core developers
+Copyright (c) 2016-2018 The Monoeci Core developers

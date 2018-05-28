@@ -2,8 +2,8 @@
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#ifndef BITCOIN_QT_RPCCONSOLE_H
-#define BITCOIN_QT_RPCCONSOLE_H
+#ifndef MONOECI_QT_RPCCONSOLE_H
+#define MONOECI_QT_RPCCONSOLE_H
 
 #include "guiutil.h"
 #include "peertablemodel.h"
@@ -36,11 +36,6 @@ class RPCConsole: public QWidget
 public:
     explicit RPCConsole(const PlatformStyle *platformStyle, QWidget *parent);
     ~RPCConsole();
-
-    static bool RPCParseCommandLine(std::string &strResult, const std::string &strCommand, bool fExecute, std::string * const pstrFilteredOut = NULL);
-    static bool RPCExecuteCommandLine(std::string &strResult, const std::string &strCommand, std::string * const pstrFilteredOut = NULL) {
-        return RPCParseCommandLine(strResult, strCommand, true, pstrFilteredOut);
-    }
 
     void setClientModel(ClientModel *model);
 
@@ -160,7 +155,6 @@ private:
     ClientModel *clientModel;
     QStringList history;
     int historyPtr;
-    QString cmdBeforeBrowsing;
     QList<NodeId> cachedNodeids;
     const PlatformStyle *platformStyle;
     RPCTimerInterface *rpcTimerInterface;
@@ -174,4 +168,4 @@ private:
     void updateNetworkState();
 };
 
-#endif // BITCOIN_QT_RPCCONSOLE_H
+#endif // MONOECI_QT_RPCCONSOLE_H

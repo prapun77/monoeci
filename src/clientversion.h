@@ -2,8 +2,8 @@
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#ifndef BITCOIN_CLIENTVERSION_H
-#define BITCOIN_CLIENTVERSION_H
+#ifndef MONOECI_CLIENTVERSION_H
+#define MONOECI_CLIENTVERSION_H
 
 #if defined(HAVE_CONFIG_H)
 #include "config/monoeci-config.h"
@@ -20,7 +20,7 @@
 #define CLIENT_VERSION_BUILD 3
 
 //! Set to true for release, false for prerelease or test build
-#define CLIENT_VERSION_IS_RELEASE false
+#define CLIENT_VERSION_IS_RELEASE true
 
 /**
  * Copyright year (2009-this)
@@ -38,7 +38,7 @@
 #define DO_STRINGIZE(X) #X
 
 //! Copyright string used in Windows .rc files
-#define COPYRIGHT_STR "2009-" STRINGIZE(COPYRIGHT_YEAR) " The Bitcoin Core Developers, 2014-" STRINGIZE(COPYRIGHT_YEAR) " The Dash Core Developers, 2017-" STRINGIZE(COPYRIGHT_YEAR) " " COPYRIGHT_HOLDERS_FINAL
+#define COPYRIGHT_STR "2009-" STRINGIZE(COPYRIGHT_YEAR) " The Bitcoin Core Developers, 2014-" STRINGIZE(COPYRIGHT_YEAR) " The Dash Core Developers, 2017-" STRINGIZE(COPYRIGHT_YEAR) " The Monoeci Core Developers"
 
 /**
  * monoecid-res.rc includes this file, but it cannot cope with real c++ code.
@@ -59,11 +59,12 @@ static const int CLIENT_VERSION =
 
 extern const std::string CLIENT_NAME;
 extern const std::string CLIENT_BUILD;
+extern const std::string CLIENT_DATE;
 
-std::string FormatVersion(int nVersion);
+
 std::string FormatFullVersion();
 std::string FormatSubVersion(const std::string& name, int nClientVersion, const std::vector<std::string>& comments);
 
 #endif // WINDRES_PREPROC
 
-#endif // BITCOIN_CLIENTVERSION_H
+#endif // MONOECI_CLIENTVERSION_H

@@ -2,13 +2,12 @@
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#ifndef BITCOIN_QT_SPLASHSCREEN_H
-#define BITCOIN_QT_SPLASHSCREEN_H
+#ifndef MONOECI_QT_SPLASHSCREEN_H
+#define MONOECI_QT_SPLASHSCREEN_H
 
 #include <functional>
 #include <QSplashScreen>
 
-class CWallet;
 class NetworkStyle;
 
 /** Class for the splashscreen with information of the running client.
@@ -46,17 +45,13 @@ private:
     void subscribeToCoreSignals();
     /** Disconnect core signals to splash screen */
     void unsubscribeFromCoreSignals();
-    /** Connect wallet signals to splash screen */
-    void ConnectWallet(CWallet*);
 
     QPixmap pixmap;
     QString curMessage;
     QColor curColor;
     int curAlignment;
 
-    QList<CWallet*> connectedWallets;
-
-    std::function<void(void)> breakAction;	
+    std::function<void(void)> breakAction;
 };
 
-#endif // BITCOIN_QT_SPLASHSCREEN_H
+#endif // MONOECI_QT_SPLASHSCREEN_H

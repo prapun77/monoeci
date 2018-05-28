@@ -1,4 +1,4 @@
-// Copyright (c) 2014-2018 The Dash Core developers
+// Copyright (c) 2014-2018 The Dash Core developers 
 // Copyright (c) 2017-2018 The Monoeci Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
@@ -39,12 +39,9 @@ void CDSNotificationInterface::UpdatedBlockTip(const CBlockIndex *pindexNew, con
     masternodeSync.UpdatedBlockTip(pindexNew, fInitialDownload, connman);
 
     // Update global DIP0001 activation status
-    fDIP0001ActiveAtTip = pindexNew->nHeight >= Params().GetConsensus().DIP0001Height;
+    fDIP0001ActiveAtTip = (VersionBitsState(pindexNew, Params().GetConsensus(), Consensus::DEPLOYMENT_DIP0001, versionbitscache) == THRESHOLD_ACTIVE);
 
     if (fInitialDownload)
-        return;
-
-    if (fLiteMode)
         return;
 
     mnodeman.UpdatedBlockTip(pindexNew);
@@ -57,8 +54,8 @@ void CDSNotificationInterface::UpdatedBlockTip(const CBlockIndex *pindexNew, con
     governance.UpdatedBlockTip(pindexNew, connman);
 }
 
-void CDSNotificationInterface::SyncTransaction(const CTransaction &tx, const CBlockIndex *pindex, int posInBlock)
+void CDSNotificationInterface::SyncTransaction(const CTransaction &tx, const CBlock *pblock)
 {
-    instantsend.SyncTransaction(tx, pindex, posInBlock);
-    CPrivateSend::SyncTransaction(tx, pindex, posInBlock);
+    instantsend.SyncTransaction(tx, pblock);
+    CPrivateSend::SyncTransaction(tx, pblock);
 }

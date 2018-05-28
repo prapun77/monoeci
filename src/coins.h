@@ -3,8 +3,8 @@
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#ifndef BITCOIN_COINS_H
-#define BITCOIN_COINS_H
+#ifndef MONOECI_COINS_H
+#define MONOECI_COINS_H
 
 #include "compressor.h"
 #include "core_memusage.h"
@@ -15,6 +15,8 @@
 
 #include <assert.h>
 #include <stdint.h>
+
+#include <boost/foreach.hpp>
 #include <unordered_map>
 
 /**
@@ -54,20 +56,20 @@ public:
     }
 
     template<typename Stream>
-    void Serialize(Stream &s) const {
+    void Serialize(Stream &s, int nType, int nVersion) const {
         assert(!IsSpent());
         uint32_t code = nHeight * 2 + fCoinBase;
-        ::Serialize(s, VARINT(code));
-        ::Serialize(s, CTxOutCompressor(REF(out)));
+        ::Serialize(s, VARINT(code), nType, nVersion);
+        ::Serialize(s, CTxOutCompressor(REF(out)), nType, nVersion);
     }
 
     template<typename Stream>
-    void Unserialize(Stream &s) {
+    void Unserialize(Stream &s, int nType, int nVersion) {
         uint32_t code = 0;
-        ::Unserialize(s, VARINT(code));
+        ::Unserialize(s, VARINT(code), nType, nVersion);
         nHeight = code >> 1;
         fCoinBase = code & 1;
-        ::Unserialize(s, REF(CTxOutCompressor(out)));
+        ::Unserialize(s, REF(CTxOutCompressor(out)), nType, nVersion);
     }
 
     bool IsSpent() const {
@@ -308,4 +310,4 @@ void AddCoins(CCoinsViewCache& cache, const CTransaction& tx, int nHeight);
 // lookups to database, so it should be used with care.
 const Coin& AccessByTxid(const CCoinsViewCache& cache, const uint256& txid);
 
-#endif // BITCOIN_COINS_H
+#endif // MONOECI_COINS_H

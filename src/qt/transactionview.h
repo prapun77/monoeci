@@ -2,8 +2,8 @@
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#ifndef BITCOIN_QT_TRANSACTIONVIEW_H
-#define BITCOIN_QT_TRANSACTIONVIEW_H
+#ifndef MONOECI_QT_TRANSACTIONVIEW_H
+#define MONOECI_QT_TRANSACTIONVIEW_H
 
 #include "guiutil.h"
 
@@ -81,9 +81,9 @@ private:
 
     GUIUtil::TableViewLastColumnResizingFixer *columnResizingFixer;
 
-    virtual void resizeEvent(QResizeEvent* event) override;
+    virtual void resizeEvent(QResizeEvent* event);
 
-    bool eventFilter(QObject *obj, QEvent *event) override;
+    bool eventFilter(QObject *obj, QEvent *event);
 
 private Q_SLOTS:
     void contextualMenu(const QPoint &);
@@ -120,4 +120,4 @@ public Q_SLOTS:
     void computeSum();
 };
 
-#endif // BITCOIN_QT_TRANSACTIONVIEW_H
+#endif // MONOECI_QT_TRANSACTIONVIEW_H

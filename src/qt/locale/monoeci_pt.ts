@@ -861,11 +861,11 @@ Endereço: %4
     </message>
     <message>
         <source>Use 2 separate masternodes to mix funds up to 1000 XMCC</source>
-        <translation>Usar 2 masternodes distintos para misturar os fundos até 1000 XMCC</translation>
+        <translation>Usar 2 masternodes distintos para misturar os fundos até 1000DRK</translation>
     </message>
     <message>
         <source>Use 8 separate masternodes to mix funds up to 1000 XMCC</source>
-        <translation>Usar 8 masternodes distintos para misturar os fundos até 1000 XMCC</translation>
+        <translation>Usar 8 masternodes distintos para misturar os fundos até 1000DRK</translation>
     </message>
     <message>
         <source>Use 16 separate masternodes</source>
@@ -2735,7 +2735,7 @@ https://www.transifex.com/projects/p/monoeci/</translation>
         <source>The Dash Core developers</source>
         <translation>Os programadores Dash Core</translation>
     </message>
-	<message>
+    <message>
         <source>The Monoeci Core developers</source>
         <translation>Os programadores Monoeci Core</translation>
     </message>
@@ -3379,7 +3379,7 @@ https://www.transifex.com/projects/p/monoeci/</translation>
     </message>
     <message>
         <source>Unable to locate enough Darksend non-denominated funds for this transaction that are not equal 1000 XMCC.</source>
-        <translation>Não foi possível localizar fundos Darksend não denominados suficientes para esta transacção que não sejam igual a 1000 XMCC.</translation>
+        <translation>Não foi possível localizar fundos Darksend não denominados suficientes para esta transacção que não sejam igual a 1000DRK.</translation>
     </message>
     <message>
         <source>Warning: -paytxfee is set very high! This is the transaction fee you will pay if you send a transaction.</source>
@@ -3634,8 +3634,8 @@ https://www.transifex.com/projects/p/monoeci/</translation>
         <translation>Definir o limite de processadores quando a geração está activa (-1 = todos, omissão: %d)</translation>
     </message>
     <message>
-        <source>Show N confirmations for a successfully locked transaction (0-9999, default: %u)</source>
-        <translation>Mostrar N confirmações para uma transacção bloqueada com sucesso (0-9999, omissão: %u)</translation>
+        <source>Show N confirmations for a successfully locked transaction (0-24157, default: %u)</source>
+        <translation>Mostrar N confirmações para uma transacção bloqueada com sucesso (0-24157, omissão: %u)</translation>
     </message>
     <message>
         <source>This product includes software developed by the OpenSSL Project for use in the OpenSSL Toolkit &lt;https://www.openssl.org/&gt; and cryptographic software written by Eric Young and UPnP software written by Thomas Bernard.</source>
@@ -3643,7 +3643,7 @@ https://www.transifex.com/projects/p/monoeci/</translation>
     </message>
     <message>
         <source>Unable to locate enough funds for this transaction that are not equal 1000 XMCC.</source>
-        <translation>Não foi possível localizar fundos suficientes para esta transacção que não sejam igual a 1000 XMCC.</translation>
+        <translation>Não foi possível localizar fundos suficientes para esta transacção que não sejam igual a 1000DRK.</translation>
     </message>
     <message>
         <source>Use separate SOCKS5 proxy to reach peers via Tor hidden services (default: %s)</source>
@@ -3658,8 +3658,8 @@ https://www.transifex.com/projects/p/monoeci/</translation>
         <translation>Aviso: Por favor verifique que a data e a hora do computador está correcta! Se o relógio estiver errado o Monoeci Core não vai funcionar correctamente.</translation>
     </message>
     <message>
-        <source>(9999 could be used only on mainnet)</source>
-        <translation>(9999 apenas pode ser usado para mainnet)</translation>
+        <source>(24157 could be used only on mainnet)</source>
+        <translation>(24157 apenas pode ser usado para mainnet)</translation>
     </message>
     <message>
         <source>(default: %s)</source>
@@ -3700,8 +3700,12 @@ https://www.transifex.com/projects/p/monoeci/</translation>
         <translation>Copyright (C) 2009-%i The Bitcoin Core Developers</translation>
     </message>
     <message>
-        <source>Copyright (C) 2014-%i The Monoeci Core Developers</source>
-        <translation>Copyright (C) 2014-%i Monoeci Core Developers</translation>
+        <source>Copyright (C) 2014-%i The Dash Core Developers</source>
+        <translation>Copyright (C) 2014-%i Dash Core Developers</translation>
+    </message>
+	<message>
+        <source>Copyright (C) 2017-%i The Monoeci Core Developers</source>
+        <translation>Copyright (C) 2017-%i Monoeci Core Developers</translation>
     </message>
     <message>
         <source>Could not parse -rpcbind value %s as network address</source>
@@ -4068,8 +4072,8 @@ https://www.transifex.com/projects/p/monoeci/</translation>
         <translation>masternodeprivkey inválida. Por favor reveja a documentação.</translation>
     </message>
     <message>
-        <source>(must be 9999 for mainnet)</source>
-        <translation>(deve ser 9999 para mainnet)</translation>
+        <source>(must be 24157 for mainnet)</source>
+        <translation>(deve ser 24157 para mainnet)</translation>
     </message>
     <message>
         <source>Can't find random Masternode.</source>

@@ -1,12 +1,12 @@
 // Copyright (c) 2009-2010 Satoshi Nakamoto
 // Copyright (c) 2009-2018 The Bitcoin Core developers
-// Copyright (c) 2014-2018 The Dash Core developers
+// Copyright (c) 2014-2018 The Dash Core developers 
 // Copyright (c) 2017-2018 The Monoeci Core developers
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#ifndef BITCOIN_UINT256_H
-#define BITCOIN_UINT256_H
+#ifndef MONOECI_UINT256_H
+#define MONOECI_UINT256_H
 
 #include <assert.h>
 #include <cstring>
@@ -44,11 +44,9 @@ public:
         memset(data, 0, sizeof(data));
     }
 
-    inline int Compare(const base_blob& other) const { return memcmp(data, other.data, sizeof(data)); }
-
-    friend inline bool operator==(const base_blob& a, const base_blob& b) { return a.Compare(b) == 0; }
-    friend inline bool operator!=(const base_blob& a, const base_blob& b) { return a.Compare(b) != 0; }
-    friend inline bool operator<(const base_blob& a, const base_blob& b) { return a.Compare(b) < 0; }
+    friend inline bool operator==(const base_blob& a, const base_blob& b) { return memcmp(a.data, b.data, sizeof(a.data)) == 0; }
+    friend inline bool operator!=(const base_blob& a, const base_blob& b) { return memcmp(a.data, b.data, sizeof(a.data)) != 0; }
+    friend inline bool operator<(const base_blob& a, const base_blob& b) { return memcmp(a.data, b.data, sizeof(a.data)) < 0; }
 
     std::string GetHex() const;
     void SetHex(const char* psz);
@@ -80,6 +78,11 @@ public:
         return sizeof(data);
     }
 
+    unsigned int GetSerializeSize(int nType, int nVersion) const
+    {
+        return sizeof(data);
+    }
+
     uint64_t GetUint64(int pos) const
     {
         const uint8_t* ptr = data + pos * 8;
@@ -94,13 +97,13 @@ public:
     }
 
     template<typename Stream>
-    void Serialize(Stream& s) const
+    void Serialize(Stream& s, int nType, int nVersion) const
     {
         s.write((char*)data, sizeof(data));
     }
 
     template<typename Stream>
-    void Unserialize(Stream& s)
+    void Unserialize(Stream& s, int nType, int nVersion)
     {
         s.read((char*)data, sizeof(data));
     }
@@ -176,4 +179,4 @@ public:
 };
 
 
-#endif // BITCOIN_UINT256_H
+#endif // MONOECI_UINT256_H

@@ -1,7 +1,7 @@
 Monoeci Core 0.12.1
 =====================
 
-This is the official reference wallet for Monoeci digital currency and comprises the backbone of the Monoeci peer-to-peer network. You can [download Monoeci Core](https://www.monoeci.io/get-monoeci/) or [build it yourself](#building) using the guides below.
+This is the official reference wallet for Monoeci digital currency and comprises the backbone of the Monoeci peer-to-peer network. You can [download Monoeci Core](https://www.monoeci.io/downloads/) or [build it yourself](#building) using the guides below.
 
 Running
 ---------------------
@@ -24,8 +24,10 @@ Drag Monoeci-Qt to your applications folder, and then run Monoeci-Qt.
 
 ### Need Help?
 
-* Ask for help on [Monoeci Discord](https://discord.gg/Hsdg3BV)
-* Ask for help on the Monoeci support at support@monoeci.io
+* See the [Monoeci documentation](https://monoecipay.atlassian.net/wiki/display/DOC)
+for help and more information.
+* Ask for help on [#monoecipay](http://webchat.freenode.net?channels=monoecipay) on Freenode. If you don't have an IRC client use [webchat here](http://webchat.freenode.net?channels=monoecipay).
+* Ask for help on the [MonoeciTalk](https://monoecitalk.org/) forums.
 
 Building
 ---------------------
@@ -42,28 +44,30 @@ Development
 The Monoeci Core repo's [root README](/README.md) contains relevant information on the development process and automated testing.
 
 - [Developer Notes](developer-notes.md)
+- [Multiwallet Qt Development](multiwallet-qt.md)
 - [Release Notes](release-notes.md)
 - [Release Process](release-process.md)
 - Source Code Documentation ***TODO***
 - [Translation Process](translation_process.md)
 - [Translation Strings Policy](translation_strings_policy.md)
-- [Travis CI](travis-ci.md)
+- [Unit Tests](unit-tests.md)
 - [Unauthenticated REST Interface](REST-interface.md)
 - [Shared Libraries](shared-libraries.md)
 - [BIPS](bips.md)
 - [Dnsseed Policy](dnsseed-policy.md)
-- [Benchmarking](benchmarking.md)
+
+### Resources
+* Discuss on the [MonoeciTalk](https://monoecitalk.org/) forums, in the Development & Technical Discussion board.
+* Discuss on [#monoecipay](http://webchat.freenode.net/?channels=monoecipay) on Freenode. If you don't have an IRC client use [webchat here](http://webchat.freenode.net/?channels=monoecipay).
 
 ### Miscellaneous
 - [Assets Attribution](assets-attribution.md)
 - [Files](files.md)
-- [Reduce Traffic](reduce-traffic.md)
 - [Tor Support](tor.md)
 - [Init Scripts (systemd/upstart/openrc)](init.md)
-- [ZMQ](zmq.md)
 
 License
 ---------------------
-Distributed under the [MIT software license](/COPYING).
+Distributed under the [MIT software license](http://www.opensource.org/licenses/mit-license.php).
 This product includes software developed by the OpenSSL Project for use in the [OpenSSL Toolkit](https://www.openssl.org/). This product includes
 cryptographic software written by Eric Young ([eay@cryptsoft.com](mailto:eay@cryptsoft.com)), and UPnP software written by Thomas Bernard.

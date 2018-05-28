@@ -2140,9 +2140,9 @@ https://www.transifex.com/projects/p/monoeci/</translation>
         <translation>Bitcoin Core-utvecklarna</translation>
     </message>
     <message>
-        <source>The Dash Core developers</source>
+        <source>The Da sh Core developers</source>
         <translation>Dash Core-utvecklarna</translation>
-    </message>    
+    </message>
 	<message>
         <source>The Monoeci Core developers</source>
         <translation>Monoeci Core-utvecklarna</translation>

@@ -62,6 +62,7 @@ libconftest.dylib*
 *.o
 *.o-*
 *.patch
+.monoeci
 *.a
 *.pb.cc
 *.pb.h
@@ -107,8 +108,13 @@ coverage_percent.txt
 linux-coverage-build
 linux-build
 win32-build
+qa/pull-tester/run-bitcoind-for-test.sh
 qa/pull-tester/tests_config.py
-qa/cache/*
+qa/pull-tester/cache/*
+qa/pull-tester/test.*/*
+qa/tmp
+cache/
+share/BitcoindComparisonTool.jar
 
 !src/leveldb*/Makefile
 
@@ -118,7 +124,6 @@ qa/cache/*
 /doc/doxygen/
 
 libmonoeciconsensus.pc
-contrib/devtools/split-debug.sh
 src/qt/monoeci-qt.bash
 qa/pull-tester/tests-config.sh
 
@@ -127,9 +132,3 @@ monoeci-cli
 monoecid
 monoeci-qt
 make
-
-/docker/bin
-
-# CLion
-.idea
-cmake-build-debug
