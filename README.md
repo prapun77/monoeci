@@ -3,8 +3,6 @@
 Monoeci Core V1 (0.12.2.3) (XMCC)
 ===============================
 
-This is is under development. Please proceed with care.
-
 https://www.monoeci.io
 
 
