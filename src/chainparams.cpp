@@ -53,8 +53,8 @@ static CBlock CreateGenesisBlock(const char* pszTimestamp, const CScript& genesi
  */
 static CBlock CreateGenesisBlock(uint32_t nTime, uint32_t nNonce, uint32_t nBits, int32_t nVersion, const CAmount& genesisReward)
 {
-    const char* pszTimestamp = "Monaco obtient officiellement son indépendance du Saint-Empire romain en 1524";
-    const CScript genesisOutputScript = CScript() << ParseHex("04678afdb0fe5548271967f1a67130b7105cd6a828e03909a67962e0ea1f61deb649f6bc3f4cef38c4f35504e51ec112de5c384df7ba0b8d578a4c702b6bf11d5f") << OP_CHECKSIG;
+    const char* pszTimestamp = "The history of Bangkok dates at least back to the early 15th century";
+    const CScript genesisOutputScript = CScript() << ParseHex("040184710fa689ad5023690c80f3a49c8f13f8d45b8c857fbcbc8bc4a8e4d3eb4b10f4d4604fa08dce601aaf0f470216fe1b51850b4acf21b179c45070ac7b03a9") << OP_CHECKSIG;
     return CreateGenesisBlock(pszTimestamp, genesisOutputScript, nTime, nNonce, nBits, nVersion, genesisReward);
 }
 
@@ -129,36 +129,49 @@ public:
          * The characters are rarely used upper ASCII, not valid as UTF-8, and produce
          * a large 32-bit integer with any alignment.
          */
-        pchMessageStart[0] = 0xbf;
-        pchMessageStart[1] = 0x0c;
-        pchMessageStart[2] = 0x6b;
-        pchMessageStart[3] = 0xbd;
+        pchMessageStart[0] = 0xbd;
+        pchMessageStart[1] = 0x0a;
+        pchMessageStart[2] = 0x6c;
+        pchMessageStart[3] = 0xbf;
         vAlertPubKey = ParseHex("04816f1702398e05b8fec8ebbacd0f47f6dde2dd41828adc59b5cd033d9a90e926a01461872cbf2b681fce97686c4f1210cf226ef292326323dfa90fbab324e86c");
-        nDefaultPort = 24157;
+        nDefaultPort = 24257;
         nMaxTipAge = 6 * 60 * 60; // ~144 blocks behind -> 2 x fork detection time, was 24 * 60 * 60 in bitcoin
         nDelayGetHeadersTime = 24 * 60 * 60;
         nPruneAfterHeight = 100000;
-
-        genesis = CreateGenesisBlock(1495455495, 606699, 0x1e0ffff0, 1, 50 * COIN);
+		if (true)
+        {
+            hashGenesisBlock = uint256("0x0000061755f27d3286858d43b033f2007d530b213795fc42ffbcd89c5e9bc408");
+            LogPrintf("recalculating params for mainnet.\n");
+            LogPrintf("old mainnet genesis nonce: %d\n", genesis.nNonce);
+            LogPrintf("old mainnet genesis hash:  %s\n", hashGenesisBlock.ToString().c_str());
+            // deliberately empty for loop finds nonce value.
+            for(genesis.nNonce = 0; genesis.GetHash() > (~uint256(0) >> 20); genesis.nNonce++){ }
+            LogPrintf("new mainnet genesis merkle root: %s\n", genesis.hashMerkleRoot.ToString().c_str());
+            LogPrintf("new mainnet genesis nonce: %d\n", genesis.nNonce);
+            LogPrintf("new mainnet genesis hash: %s\n", genesis.GetHash().ToString().c_str());
+        }
+		
+		
+        genesis = CreateGenesisBlock(1529683948, 606699, 0x1e0ffff0, 1, 50 * COIN);
         consensus.hashGenesisBlock = genesis.GetHash();
         assert(consensus.hashGenesisBlock == uint256S("0x0000005be1eb05b05fb45ae38ee9c1441514a65343cd146100a574de4278f1a3"));
         assert(genesis.hashMerkleRoot == uint256S("0x369cd6caea22707ca0138a7ec3bda719bdfe0b0a107312c7c873b5073e1b99aa"));
 
 
-        vSeeds.push_back(CDNSSeedData("ariga.monoeci.io", "163.172.157.172")); // Europe Server
-        vSeeds.push_back(CDNSSeedData("dorado.monoeci.io", "dorado.monoeci.io")); // ASIA Server
-        vSeeds.push_back(CDNSSeedData("block.monoeci.io", "block.monoeci.io")); // Usa Server
+        //vSeeds.push_back(CDNSSeedData("ariga.monoeci.io", "163.172.157.172")); // Europe Server
+        //vSeeds.push_back(CDNSSeedData("dorado.monoeci.io", "dorado.monoeci.io")); // ASIA Server
+        //vSeeds.push_back(CDNSSeedData("block.monoeci.io", "block.monoeci.io")); // Usa Server
 
         // Monoeci addresses start with 'M'
-        base58Prefixes[PUBKEY_ADDRESS] = std::vector<unsigned char>(1,50);
+        base58Prefixes[PUBKEY_ADDRESS] = std::vector<unsigned char>(1,23);
         // Monoeci script addresses start with 'W'
-        base58Prefixes[SCRIPT_ADDRESS] = std::vector<unsigned char>(1,73);
+        base58Prefixes[SCRIPT_ADDRESS] = std::vector<unsigned char>(1,77);
         // Monoeci private keys start with 'Y' or 'X'
-        base58Prefixes[SECRET_KEY] =     std::vector<unsigned char>(1,77);
+        base58Prefixes[SECRET_KEY] =     std::vector<unsigned char>(1,98);
         // Monoeci BIP32 pubkeys start with 'xpub' (Bitcoin defaults)
-        base58Prefixes[EXT_PUBLIC_KEY] = boost::assign::list_of(0x04)(0x88)(0xB2)(0x1E).convert_to_container<std::vector<unsigned char> >();
+        base58Prefixes[EXT_PUBLIC_KEY] = boost::assign::list_of(0x05)(0x78)(0xB2)(0x1E).convert_to_container<std::vector<unsigned char> >();
         // Monoeci BIP32 prvkeys start with 'xprv' (Bitcoin defaults)
-        base58Prefixes[EXT_SECRET_KEY] = boost::assign::list_of(0x04)(0x88)(0xAD)(0xE4).convert_to_container<std::vector<unsigned char> >();
+        base58Prefixes[EXT_SECRET_KEY] = boost::assign::list_of(0x05)(0x78)(0xAD)(0xE4).convert_to_container<std::vector<unsigned char> >();
 
         // Monoeci BIP44 coin type is '5'
         nExtCoinType = 5;
@@ -168,7 +181,7 @@ public:
         fMiningRequiresPeers = true;
         fDefaultConsistencyChecks = false;
         fRequireStandard = true;
-        fMineBlocksOnDemand = false;
+        fMineBlocksOnDemand = true;
         fTestnetToBeDeprecatedFieldRPC = false;
 
         nPoolMaxTransactions = 3;
@@ -178,19 +191,11 @@ public:
         checkpointData = (CCheckpointData) {
             boost::assign::map_list_of
             (  0, uint256S("0x0000005be1eb05b05fb45ae38ee9c1441514a65343cd146100a574de4278f1a3"))
-			(  2800, uint256S("0x00000018585f50709d06af385e436a0719e861ed1291dc109c8af6f50d8b5ea8"))
-			(  5600, uint256S("0x000001245bf1fe72f792cdb41797725ad3ab6aa3f6323dd1d60fcbdc4c72e83c"))
-			(  8400, uint256S("0x0000032cb229aeb4fc56aca8a6b05e7f0e78bf80daef0df7440009f9f32d2638"))
-			(  15000, uint256S("0x0000003f3b0be67f9942e45a403b36c2b70de4cea7dd3fd279178cdbe4a43bf3"))
-			(  30000, uint256S("0x0000000000585dac1ee2e64fb74675d601848743294bfd49bf2e53f9a81f796f"))
-			(  35000, uint256S("0x00000000002cbf814d0c5f0e58b73ffb603cc63ecb161a4468d0c4685f665593"))
-			(  75000, uint256S("0x000000000000ad78b5cf4edb54ff10a1a8d06e00d2f461226a47be8c1ec422d2"))	
-			(  140000, uint256S("0x000000000000026bad04a634e054959b066dc3e1470e0c2c7b0e2f7084c7e0db"))	
 			,
-            1517530583, // * UNIX timestamp of last checkpoint block
-            140000,    // * total number of transactions between genesis and last checkpoint
+            1529683948, // * UNIX timestamp of last checkpoint block
+            0,    // * total number of transactions between genesis and last checkpoint
                         //   (the tx=... number in the SetBestChain debug.log lines)
-            2800        // * estimated number of transactions per day after checkpoint
+            0        // * estimated number of transactions per day after checkpoint
         };
     }
 };
@@ -257,7 +262,7 @@ public:
         pchMessageStart[2] = 0xca;
         pchMessageStart[3] = 0xff;
         vAlertPubKey = ParseHex("041e29ea2444c3e74357ac907d680388ea13a1dfde5d3cd0cb205db62a254645c45f9f2a50f672e942c6d5bec64b47433fc07a7063a020cc5fd74693d315131562");
-        nDefaultPort = 34157;
+        nDefaultPort = 34257;
         nMaxTipAge = 0x7fffffff; // allow mining on top of old blocks for testnet
         nDelayGetHeadersTime = 24 * 60 * 60;
         nPruneAfterHeight = 1000;
@@ -369,7 +374,7 @@ public:
         pchMessageStart[3] = 0xdc;
         nMaxTipAge = 6 * 60 * 60; // ~144 blocks behind -> 2 x fork detection time, was 24 * 60 * 60 in bitcoin
         nDelayGetHeadersTime = 0; // never delay GETHEADERS in regtests
-        nDefaultPort = 44157;
+        nDefaultPort = 44257;
         nPruneAfterHeight = 1000;
 
         genesis = CreateGenesisBlock(1480601697, 890657, 0x1e0ffff0, 1, 50 * COIN);
