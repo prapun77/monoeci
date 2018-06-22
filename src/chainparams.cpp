@@ -141,7 +141,7 @@ public:
 		genesis = CreateGenesisBlock(1529683948, 606699, 0x1e0ffff0, 1, 50 * COIN);
         consensus.hashGenesisBlock = genesis.GetHash();
 
-		if (true)
+		if (false)
         {
             consensus.hashGenesisBlock = uint256S("0x0000061755f27d3286858d43b033f2007d530b213795fc42ffbcd89c5e9bc408");
             LogPrintf("recalculating params for mainnet.\n");
