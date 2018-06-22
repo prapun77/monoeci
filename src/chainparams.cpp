@@ -138,27 +138,11 @@ public:
         nMaxTipAge = 6 * 60 * 60; // ~144 blocks behind -> 2 x fork detection time, was 24 * 60 * 60 in bitcoin
         nDelayGetHeadersTime = 24 * 60 * 60;
         nPruneAfterHeight = 100000;
-		genesis = CreateGenesisBlock(1529683948, 2084945649, 0x1e0ffff0, 1, 50 * COIN);
-		// uncomment to log genesis block info        
-//        start
- //  if (true)
-        {
-            consensus.hashGenesisBlock = uint256S("0x0000062a4525bdde82dffde79de89b420bdee90c8d168abb5e6207d6f49455c6");
-            printf("recalculating params for mainnet.\n");
-            printf("old mainnet genesis nonce: %d\n", genesis.nNonce);
-            printf("old mainnet genesis hash:  %s\n", consensus.hashGenesisBlock.ToString().c_str());
-            // deliberately empty for loop finds nonce value.
-           //  for(genesis.nNonce = 0; genesis.GetHash() > (~uint256(0) >> 20); genesis.nNonce++){ }
-            printf("new mainnet genesis merkle root: %s\n", genesis.hashMerkleRoot.ToString().c_str());
-            printf("new mainnet genesis nonce: %d\n", genesis.nNonce);
-            printf("new mainnet genesis hash: %s\n", genesis.GetHash().ToString().c_str());
-        }
-        consensus.hashGenesisBlock = genesis.GetHash();
+		genesis = CreateGenesisBlock(1529683948, 3696361, 0x1e0ffff0, 1, 50 * COIN);
+	    consensus.hashGenesisBlock = genesis.GetHash();
 
-        //genesis = CreateGenesisBlock(1529683948, 2084945649, 0x1e0ffff0, 1, 50 * COIN);
-        //consensus.hashGenesisBlock = genesis.GetHash();
-        assert(consensus.hashGenesisBlock == uint256S("0x0000062a4525bdde82dffde79de89b420bdee90c8d168abb5e6207d6f49455c6"));
-        assert(genesis.hashMerkleRoot == uint256S("0xd02e74a4a474cdb3bde2886621c63c4ed11b88c5336dd929aaa9dbce3005cec5"));
+        assert(consensus.hashGenesisBlock == uint256S("0x0000096bf21aed27dbf8e9070935948952be912bf0454e823a3f9e9bdd39e772"));
+        assert(genesis.hashMerkleRoot == uint256S("0xed59b3f8612a4f63215090d4267e92f9ef63a0a103f1ddcf9e1b133375e07c77"));
 
 
         //vSeeds.push_back(CDNSSeedData("ariga.monoeci.io", "163.172.157.172")); // Europe Server
