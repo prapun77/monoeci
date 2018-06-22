@@ -143,12 +143,12 @@ public:
 //        start
    if (false)
         {
-            consensus.hashGenesisBlock = uint256("0x0000062a4525bdde82dffde79de89b420bdee90c8d168abb5e6207d6f49455c6");
+            consensus.hashGenesisBlock = uint256S("0x0000062a4525bdde82dffde79de89b420bdee90c8d168abb5e6207d6f49455c6");
             printf("recalculating params for mainnet.\n");
             printf("old mainnet genesis nonce: %d\n", genesis.nNonce);
             printf("old mainnet genesis hash:  %s\n", consensus.hashGenesisBlock.ToString().c_str());
             // deliberately empty for loop finds nonce value.
-           // for(genesis.nNonce = 0; genesis.GetHash() > (~uint256(0) >> 20); genesis.nNonce++){ }
+           //  for(genesis.nNonce = 0; genesis.GetHash() > (~uint256(0) >> 20); genesis.nNonce++){ }
             printf("new mainnet genesis merkle root: %s\n", genesis.hashMerkleRoot.ToString().c_str());
             printf("new mainnet genesis nonce: %d\n", genesis.nNonce);
             printf("new mainnet genesis hash: %s\n", genesis.GetHash().ToString().c_str());
