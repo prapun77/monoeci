@@ -254,15 +254,16 @@ public:
         nDelayGetHeadersTime = 24 * 60 * 60;
         nPruneAfterHeight = 1000;
 
-        genesis = CreateGenesisBlock(1490601697, 511392, 0x1e0ffff0, 1, 50 * COIN);
-        consensus.hashGenesisBlock = genesis.GetHash();
-        assert(consensus.hashGenesisBlock == uint256S("0x000008f18ad6913eed878632efbb83909272d493e5c065789330eb23ab65b5cf"));
-        assert(genesis.hashMerkleRoot == uint256S("369cd6caea22707ca0138a7ec3bda719bdfe0b0a107312c7c873b5073e1b99aa"));
-        
+ 		genesis = CreateGenesisBlock(1529683948, 3696361, 0x1e0ffff0, 1, 50 * COIN);
+	    consensus.hashGenesisBlock = genesis.GetHash();
+
+        assert(consensus.hashGenesisBlock == uint256S("0x0000096bf21aed27dbf8e9070935948952be912bf0454e823a3f9e9bdd39e772"));
+        assert(genesis.hashMerkleRoot == uint256S("0xed59b3f8612a4f63215090d4267e92f9ef63a0a103f1ddcf9e1b133375e07c77"));
+       
         vFixedSeeds.clear();
         vSeeds.clear();
-        vSeeds.push_back(CDNSSeedData("testnet1.monoeci.io",  "testnet1.monoeci.io"));
-        vSeeds.push_back(CDNSSeedData("testnet2.monoeci.io",  "testnet2.monoeci.io"));
+//        vSeeds.push_back(CDNSSeedData("testnet1.monoeci.io",  "testnet1.monoeci.io"));
+//        vSeeds.push_back(CDNSSeedData("testnet2.monoeci.io",  "testnet2.monoeci.io"));
 
         // Testnet Monoeci addresses start with 'y' or 'x'
         base58Prefixes[PUBKEY_ADDRESS] = std::vector<unsigned char>(1,139);
