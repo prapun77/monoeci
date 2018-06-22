@@ -141,7 +141,7 @@ public:
 		genesis = CreateGenesisBlock(1529683948, 2084945649, 0x1e0ffff0, 1, 50 * COIN);
 		// uncomment to log genesis block info        
 //        start
-   if (true)
+ //  if (true)
         {
             consensus.hashGenesisBlock = uint256S("0x0000062a4525bdde82dffde79de89b420bdee90c8d168abb5e6207d6f49455c6");
             printf("recalculating params for mainnet.\n");
