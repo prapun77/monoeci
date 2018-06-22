@@ -139,6 +139,39 @@ public:
         nDelayGetHeadersTime = 24 * 60 * 60;
         nPruneAfterHeight = 100000;
 		genesis = CreateGenesisBlock(1529683948, 2084945649, 0x1e0ffff0, 1, 50 * COIN);
+		// uncomment to log genesis block info        
+//        start
+        if (false && genesis.GetHash() != consensus.hashGenesisBlock)
+                       {
+                           printf("Searching for genesis block...\n");
+                           uint256 hashTarget = CBigNum().SetCompact(genesis.nBits).getuint256();
+                           uint256 thash;
+
+                           while (true)
+                           {
+                               thash = genesis.GetHash();
+                               if (thash <= hashTarget)
+                                   break;
+                               if ((genesis.nNonce & 0xFFF) == 0)
+                               {
+                     printf("nonce %08X: hash = %s (target = %s)\n", genesis.nNonce, thash.ToString().c_str(), hashTarget.ToString().c_str());
+                               }
+                               ++genesis.nNonce;
+                               if (genesis.nNonce == 0)
+                               {
+                                   printf("NONCE WRAPPED, incrementing time\n");
+                                   ++genesis.nTime;
+                               }
+                           }
+                           printf("genesis.nTime = %u \n", genesis.nTime);
+                           printf("genesis.nNonce = %u \n", genesis.nNonce);
+                           printf("genesis.nVersion = %u \n", genesis.nVersion);
+                           printf("genesis.GetHash = %s\n", genesis.GetHash().ToString().c_str());// first this, then comment this line out and uncomment the one under.
+                           printf("genesis.hashMerkleRoot = %s \n", genesis.hashMerkleRoot.ToString().c_str());// improvised. worked for me, to find merkle root
+
+                       }
+
+  //      end
         consensus.hashGenesisBlock = genesis.GetHash();
 
         //genesis = CreateGenesisBlock(1529683948, 2084945649, 0x1e0ffff0, 1, 50 * COIN);
