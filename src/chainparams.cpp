@@ -138,13 +138,13 @@ public:
         nMaxTipAge = 6 * 60 * 60; // ~144 blocks behind -> 2 x fork detection time, was 24 * 60 * 60 in bitcoin
         nDelayGetHeadersTime = 24 * 60 * 60;
         nPruneAfterHeight = 100000;
-		genesis = CreateGenesisBlock(1529683948, 606699, 0x1e0ffff0, 1, 50 * COIN);
+		genesis = CreateGenesisBlock(1529683948, 2084945649, 0x1e0ffff0, 1, 50 * COIN);
         consensus.hashGenesisBlock = genesis.GetHash();
 
-        //genesis = CreateGenesisBlock(1529683948, 606699, 0x1e0ffff0, 1, 50 * COIN);
+        //genesis = CreateGenesisBlock(1529683948, 2084945649, 0x1e0ffff0, 1, 50 * COIN);
         //consensus.hashGenesisBlock = genesis.GetHash();
-        assert(consensus.hashGenesisBlock == uint256S("0x000007c03402356d0f67dcebe8cc1a306aa4acc90b7d48bb957b0a32334a803a"));
-        assert(genesis.hashMerkleRoot == uint256S("0xed59b3f8612a4f63215090d4267e92f9ef63a0a103f1ddcf9e1b133375e07c77"));
+        assert(consensus.hashGenesisBlock == uint256S("0x0000062a4525bdde82dffde79de89b420bdee90c8d168abb5e6207d6f49455c6"));
+        assert(genesis.hashMerkleRoot == uint256S("0xd02e74a4a474cdb3bde2886621c63c4ed11b88c5336dd929aaa9dbce3005cec5"));
 
 
         //vSeeds.push_back(CDNSSeedData("ariga.monoeci.io", "163.172.157.172")); // Europe Server
