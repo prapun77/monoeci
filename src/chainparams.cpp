@@ -141,37 +141,18 @@ public:
 		genesis = CreateGenesisBlock(1529683948, 2084945649, 0x1e0ffff0, 1, 50 * COIN);
 		// uncomment to log genesis block info        
 //        start
-        if (false && genesis.GetHash() != consensus.hashGenesisBlock)
-                       {
-                           printf("Searching for genesis block...\n");
-                           uint256 hashTarget = CBigNum().SetCompact(genesis.nBits).getuint256();
-                           uint256 thash;
-
-                           while (true)
-                           {
-                               thash = genesis.GetHash();
-                               if (thash <= hashTarget)
-                                   break;
-                               if ((genesis.nNonce & 0xFFF) == 0)
-                               {
-                     printf("nonce %08X: hash = %s (target = %s)\n", genesis.nNonce, thash.ToString().c_str(), hashTarget.ToString().c_str());
-                               }
-                               ++genesis.nNonce;
-                               if (genesis.nNonce == 0)
-                               {
-                                   printf("NONCE WRAPPED, incrementing time\n");
-                                   ++genesis.nTime;
-                               }
-                           }
-                           printf("genesis.nTime = %u \n", genesis.nTime);
-                           printf("genesis.nNonce = %u \n", genesis.nNonce);
-                           printf("genesis.nVersion = %u \n", genesis.nVersion);
-                           printf("genesis.GetHash = %s\n", genesis.GetHash().ToString().c_str());// first this, then comment this line out and uncomment the one under.
-                           printf("genesis.hashMerkleRoot = %s \n", genesis.hashMerkleRoot.ToString().c_str());// improvised. worked for me, to find merkle root
-
-                       }
-
-  //      end
+   if (false)
+        {
+            consensus.hashGenesisBlock = uint256("0x0000062a4525bdde82dffde79de89b420bdee90c8d168abb5e6207d6f49455c6");
+            printf("recalculating params for mainnet.\n");
+            printf("old mainnet genesis nonce: %d\n", genesis.nNonce);
+            printf("old mainnet genesis hash:  %s\n", consensus.hashGenesisBlock.ToString().c_str());
+            // deliberately empty for loop finds nonce value.
+           // for(genesis.nNonce = 0; genesis.GetHash() > (~uint256(0) >> 20); genesis.nNonce++){ }
+            printf("new mainnet genesis merkle root: %s\n", genesis.hashMerkleRoot.ToString().c_str());
+            printf("new mainnet genesis nonce: %d\n", genesis.nNonce);
+            printf("new mainnet genesis hash: %s\n", genesis.GetHash().ToString().c_str());
+        }
         consensus.hashGenesisBlock = genesis.GetHash();
 
         //genesis = CreateGenesisBlock(1529683948, 2084945649, 0x1e0ffff0, 1, 50 * COIN);
