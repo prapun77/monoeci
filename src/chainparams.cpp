@@ -141,24 +141,10 @@ public:
 		genesis = CreateGenesisBlock(1529683948, 606699, 0x1e0ffff0, 1, 50 * COIN);
         consensus.hashGenesisBlock = genesis.GetHash();
 
-		if (false)
-        {
-            consensus.hashGenesisBlock = uint256S("0x0000061755f27d3286858d43b033f2007d530b213795fc42ffbcd89c5e9bc408");
-            LogPrintf("recalculating params for mainnet.\n");
-            LogPrintf("old mainnet genesis nonce: %d\n", genesis.nNonce);
-            LogPrintf("old mainnet genesis hash:  %s\n", consensus.hashGenesisBlock.ToString().c_str());
-            // deliberately empty for loop finds nonce value.
-            //for(genesis.nNonce = 0; genesis.GetHash() > (~uint256(0) >> 20); genesis.nNonce++){ }
-            LogPrintf("new mainnet genesis merkle root: %s\n", genesis.hashMerkleRoot.ToString().c_str());
-            LogPrintf("new mainnet genesis nonce: %d\n", genesis.nNonce);
-            LogPrintf("new mainnet genesis hash: %s\n", genesis.GetHash().ToString().c_str());
-        }
-		
-		
         //genesis = CreateGenesisBlock(1529683948, 606699, 0x1e0ffff0, 1, 50 * COIN);
         //consensus.hashGenesisBlock = genesis.GetHash();
-        assert(consensus.hashGenesisBlock == uint256S("0x0000005be1eb05b05fb45ae38ee9c1441514a65343cd146100a574de4278f1a3"));
-        assert(genesis.hashMerkleRoot == uint256S("0x369cd6caea22707ca0138a7ec3bda719bdfe0b0a107312c7c873b5073e1b99aa"));
+        assert(consensus.hashGenesisBlock == uint256S("0x000007c03402356d0f67dcebe8cc1a306aa4acc90b7d48bb957b0a32334a803a"));
+        assert(genesis.hashMerkleRoot == uint256S("0xed59b3f8612a4f63215090d4267e92f9ef63a0a103f1ddcf9e1b133375e07c77"));
 
 
         //vSeeds.push_back(CDNSSeedData("ariga.monoeci.io", "163.172.157.172")); // Europe Server
