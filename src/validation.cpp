@@ -1234,10 +1234,10 @@ CAmount GetBlockSubsidy(int nPrevBits, int nPrevHeight, const Consensus::Params&
     // double dDiff;
     CAmount nSubsidyBase;
 
-	if(nPrevHeight <= 50) {
-		nSubsidyBase = 100000000; // Gouvernance	XMCC
-	}else if((nPrevHeight > 12500) & (nPrevHeight <= 14000)){		
-		nSubsidyBase = 0; // Gouvernance	XMCC
+	if(nPrevHeight <= 100) {
+		nSubsidyBase = 1000000; // Gouvernance	XMCC
+	}else if((nPrevHeight > 100) & (nPrevHeight <= 14000)){		
+		nSubsidyBase = 1; // Gouvernance	XMCC
 	}else {
 		if((nPrevHeight > 7200) & (nPrevHeight <= 270000)) nSubsidyBase = 0; 	
 		if((nPrevHeight > 270000) & (nPrevHeight <= 532800)) nSubsidyBase = 0; 
@@ -1250,9 +1250,9 @@ CAmount GetBlockSubsidy(int nPrevBits, int nPrevHeight, const Consensus::Params&
     CAmount nSubsidy = nSubsidyBase * COIN;  
 
     // Hard fork to reduce the block reward by 10 extra percent (allowing budget/superblocks)
-    CAmount nSuperblockPart = (nPrevHeight > consensusParams.nBudgetPaymentsStartBlock) ? nSubsidy/10 : 0;
-
-    return fSuperblockPartOnly ? nSuperblockPart : nSubsidy - nSuperblockPart;
+   //Amount nSuperblockPart = (nPrevHeight > consensusParams.nBudgetPaymentsStartBlock) ? nSubsidy/10 : 0;
+return nSubsidy;
+    //return fSuperblockPartOnly ? nSuperblockPart : nSubsidy - nSuperblockPart;
 }
 
 CAmount GetMasternodePayment(int nHeight, CAmount blockValue)
