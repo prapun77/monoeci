@@ -1234,16 +1234,16 @@ CAmount GetBlockSubsidy(int nPrevBits, int nPrevHeight, const Consensus::Params&
     // double dDiff;
     CAmount nSubsidyBase;
 
-	if(nPrevHeight <= 7200) {
-		nSubsidyBase = 1000; // Gouvernance	XMCC
+	if(nPrevHeight <= 50) {
+		nSubsidyBase = 100000000; // Gouvernance	XMCC
 	}else if((nPrevHeight > 12500) & (nPrevHeight <= 14000)){		
-		nSubsidyBase = 1000; // Gouvernance	XMCC
+		nSubsidyBase = 0; // Gouvernance	XMCC
 	}else {
-		if((nPrevHeight > 7200) & (nPrevHeight <= 270000)) nSubsidyBase = 10; 	
-		if((nPrevHeight > 270000) & (nPrevHeight <= 532800)) nSubsidyBase = 8; 
-		if((nPrevHeight > 532800) & (nPrevHeight <= 1058400)) nSubsidyBase = 6; 
-		if((nPrevHeight > 1058400) & (nPrevHeight <= 1584000)) nSubsidyBase = 4; 
-		if(nPrevHeight > 1584000) nSubsidyBase = 2; // After	
+		if((nPrevHeight > 7200) & (nPrevHeight <= 270000)) nSubsidyBase = 0; 	
+		if((nPrevHeight > 270000) & (nPrevHeight <= 532800)) nSubsidyBase = 0; 
+		if((nPrevHeight > 532800) & (nPrevHeight <= 1058400)) nSubsidyBase = 0; 
+		if((nPrevHeight > 1058400) & (nPrevHeight <= 1584000)) nSubsidyBase = 0; 
+		if(nPrevHeight > 1584000) nSubsidyBase = 0; // After	
 	}
   
     // LogPrintf("height %u diff %4.2f reward %d\n", nPrevHeight, dDiff, nSubsidyBase);
