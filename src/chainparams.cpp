@@ -119,10 +119,10 @@ public:
         consensus.vDeployments[Consensus::DEPLOYMENT_DIP0001].nThreshold = 3226; // 80% of 4032
 
         // The best chain should have at least this much work.
-        consensus.nMinimumChainWork = uint256S("0000000000000000000000000000000000000000000000072eb013e4e8b5407f"); // 140000
+        consensus.nMinimumChainWork = uint256S("0000000000000000000000000000000000000000000000000000000000000000"); // 140000
 
         // By default assume that the signatures in ancestors of this block are valid.
-        consensus.defaultAssumeValid = uint256S("000000000000026bad04a634e054959b066dc3e1470e0c2c7b0e2f7084c7e0db"); // 140000
+        consensus.defaultAssumeValid = uint256S("0000000000000000000000000000000000000000000000000000000000000000"); // 140000
 
         /**
          * The message start string is designed to be unlikely to occur in normal data.
@@ -266,15 +266,15 @@ public:
 //        vSeeds.push_back(CDNSSeedData("testnet2.monoeci.io",  "testnet2.monoeci.io"));
 
         // Testnet Monoeci addresses start with 'y' or 'x'
-        base58Prefixes[PUBKEY_ADDRESS] = std::vector<unsigned char>(1,139);
+        base58Prefixes[PUBKEY_ADDRESS] = std::vector<unsigned char>(1,129);
         // Testnet Monoeci script addresses start with '8' or '9'
         base58Prefixes[SCRIPT_ADDRESS] = std::vector<unsigned char>(1,19);
         // Testnet private keys start with '9' or 'c' (Bitcoin defaults)
         base58Prefixes[SECRET_KEY] =     std::vector<unsigned char>(1,239);
         // Testnet Monoeci BIP32 pubkeys start with 'tpub' (Bitcoin defaults)
-        base58Prefixes[EXT_PUBLIC_KEY] = boost::assign::list_of(0x04)(0x35)(0x87)(0xCF).convert_to_container<std::vector<unsigned char> >();
+        base58Prefixes[EXT_PUBLIC_KEY] = boost::assign::list_of(0x14)(0x45)(0x87)(0xCF).convert_to_container<std::vector<unsigned char> >();
         // Testnet Monoeci BIP32 prvkeys start with 'tprv' (Bitcoin defaults)
-        base58Prefixes[EXT_SECRET_KEY] = boost::assign::list_of(0x04)(0x35)(0x83)(0x94).convert_to_container<std::vector<unsigned char> >();
+        base58Prefixes[EXT_SECRET_KEY] = boost::assign::list_of(0x14)(0x45)(0x83)(0x94).convert_to_container<std::vector<unsigned char> >();
 
         // Testnet Monoeci BIP44 coin type is '1' (All coin's testnet default)
         nExtCoinType = 1;
