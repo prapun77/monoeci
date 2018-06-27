@@ -78,7 +78,7 @@ public:
         consensus.nMasternodePaymentsStartBlock = 1000; // not true, but it's ok as long as it's less then nMasternodePaymentsIncreaseBlock
         consensus.nMasternodePaymentsIncreaseBlock = 120000; // 6 month after geneis
         consensus.nMasternodePaymentsIncreasePeriod = 720*30; //1 Month
-        consensus.nInstantSendKeepLock = 24;
+        consensus.nInstantSendKeepLock = 5;
         consensus.nBudgetPaymentsStartBlock = 130000; // actual historical value
         consensus.nBudgetPaymentsCycleBlocks = 21600; // 1 Month
         consensus.nBudgetPaymentsWindowBlocks = 100;
@@ -94,14 +94,14 @@ public:
         consensus.BIP34Height = 5000;
         consensus.BIP34Hash = uint256S("0x0000000319f64f5a0d068d82efb8ce0843f20b3a56fee1bf04707ff92fc484d7");
         consensus.powLimit = uint256S("00000fffff000000000000000000000000000000000000000000000000000000");
-        consensus.nPowTargetTimespan = 24 * 60 * 60; // Monoeci: 1 day
-        consensus.nPowTargetSpacing = 2 * 60; // Monoeci: 2 minutes
+        consensus.nPowTargetTimespan =  60 * 60; // Monoeci: 1 day
+        consensus.nPowTargetSpacing =  30; // Monoeci: 2 minutes
         consensus.fPowAllowMinDifficultyBlocks = false;
         consensus.fPowNoRetargeting = false;
         consensus.nPowKGWHeight = 15200;
         consensus.nPowDGWHeight = 34140;
-        consensus.nRuleChangeActivationThreshold = 1916; // 95% of 2016
-        consensus.nMinerConfirmationWindow = 2016; // nPowTargetTimespan / nPowTargetSpacing
+        consensus.nRuleChangeActivationThreshold = 108; // 95% of 2016
+        consensus.nMinerConfirmationWindow = 144; // nPowTargetTimespan / nPowTargetSpacing
         consensus.vDeployments[Consensus::DEPLOYMENT_TESTDUMMY].bit = 28;
         consensus.vDeployments[Consensus::DEPLOYMENT_TESTDUMMY].nStartTime = 1199145601; // January 1, 2008
         consensus.vDeployments[Consensus::DEPLOYMENT_TESTDUMMY].nTimeout = 1230767999; // December 31, 2008
@@ -119,10 +119,10 @@ public:
         consensus.vDeployments[Consensus::DEPLOYMENT_DIP0001].nThreshold = 3226; // 80% of 4032
 
         // The best chain should have at least this much work.
-        consensus.nMinimumChainWork = uint256S("0000000000000000000000000000000000000000000000000000000000000000"); // 140000
+        consensus.nMinimumChainWork = uint256S("0x00"); // 140000
 
         // By default assume that the signatures in ancestors of this block are valid.
-        consensus.defaultAssumeValid = uint256S("0000000000000000000000000000000000000000000000000000000000000000"); // 140000
+        consensus.defaultAssumeValid = uint256S("0x00"); // 140000
 
         /**
          * The message start string is designed to be unlikely to occur in normal data.
